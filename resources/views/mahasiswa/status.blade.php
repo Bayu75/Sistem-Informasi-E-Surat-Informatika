@@ -42,7 +42,7 @@
             <div class="relative">
                 <div class="absolute left-8 right-8 top-6 h-1 bg-slate-200"></div>
 
-                <div class="relative grid grid-cols-4 gap-3 text-center">
+                <div class="relative grid grid-cols-3 gap-3 text-center">
                     <div>
                         <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500 text-white ring-4 ring-cyan-100">
                             ⏱
@@ -52,16 +52,9 @@
 
                     <div>
                         <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-400">
-                            ✓
-                        </div>
-                        <p class="mt-3 text-sm font-semibold text-slate-400">Diverifikasi<br>Admin</p>
-                    </div>
-
-                    <div>
-                        <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-400">
                             ➤
                         </div>
-                        <p class="mt-3 text-sm font-semibold text-slate-400">Diteruskan<br>ke Kaprodi</p>
+                        <p class="mt-3 text-sm font-semibold text-slate-400">Diproses<br>Kaprodi</p>
                     </div>
 
                     <div>

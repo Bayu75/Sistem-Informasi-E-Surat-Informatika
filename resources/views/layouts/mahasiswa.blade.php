@@ -90,14 +90,25 @@
                 </div>
 
                 <div>
-                    <p class="text-sm font-semibold">Budi Santoso</p>
-                    <p class="text-xs text-cyan-100/60">NIM: 2021001</p>
+                    <p class="text-sm font-semibold">
+                        {{ auth()->user()->mahasiswa->nama }}
+                    </p>
+                    <p class="text-xs text-cyan-100/60">
+                        {{ auth()->user()->mahasiswa->nim }}
+                    </p>
                 </div>
             </div>
 
-            <a href="/login" class="text-sm text-cyan-100/70 hover:text-white">
-                ↳ Logout
-            </a>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+
+                <button
+                    type="submit"
+                    class="text-sm text-blue-100/70 transition hover:text-white"
+                >
+                    ↳ Logout
+                </button>
+            </form>
         </div>
     </aside>
 
@@ -131,6 +142,12 @@
         </header>
 
         <main class="min-h-[calc(100vh-5rem)] p-4 lg:p-8">
+            @if(session('error'))
+                <div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                    {{ session('error') }}
+                </div>
+            @endif
+            
             @yield('content')
         </main>
     </div>

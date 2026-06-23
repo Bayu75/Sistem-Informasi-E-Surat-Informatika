@@ -1,80 +1,67 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Auth;
 
 // Landing Page
-Route::get('/landing-page', function () {
+Route::get('/', function () {
+
+    if (Auth::check()) {
+
+        return match (Auth::user()->role) {
+            'mahasiswa' => redirect('/mahasiswa/dashboard'),
+            'admin' => redirect('/admin/dashboard'),
+            'kaprodi' => redirect('/kaprodi/dashboard'),
+        };
+    }
+
     return view('landing-page');
 });
 
 // Login
-Route::get('/login', function () {
-    return view('auth.login');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'index'])
+        ->name('login');
+
+    Route::post('/login', [AuthController::class, 'authenticate']);
 });
 
-// Admin TU
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->name('logout');
+
+// mahasiswa
+Route::prefix('mahasiswa')
+    ->middleware(['auth', 'role:mahasiswa'])
+    ->group(function () {
+
+        Route::view('/dashboard', 'mahasiswa.dashboard');
+        Route::view('/pengumuman', 'mahasiswa.pengumuman');
+        Route::view('/ajukan', 'mahasiswa.ajukan');
+        Route::view('/status', 'mahasiswa.status');
+        Route::view('/riwayat', 'mahasiswa.riwayat');
 });
 
-Route::get('/admin/pengajuan-masuk', function () {
-    return view('admin.pengajuan-masuk');
+// admin
+Route::prefix('admin')
+    ->middleware(['auth', 'role:admin'])
+    ->group(function () {
+
+        Route::view('/dashboard', 'admin.dashboard');
+        Route::view('/pengajuan-masuk', 'admin.pengajuan-masuk');
+        Route::view('/verifikasi', 'admin.verifikasi');
+        Route::view('/teruskan', 'admin.teruskan');
+        Route::view('/pengumuman', 'admin.pengumuman');
+        Route::view('/arsip', 'admin.arsip');
 });
 
-Route::get('/admin/verifikasi', function () {
-    return view('admin.verifikasi');
-});
+// kaprodi
+Route::prefix('kaprodi')
+    ->middleware(['auth', 'role:kaprodi'])
+    ->group(function () {
 
-Route::get('/admin/teruskan', function () {
-    return view('admin.teruskan');
-});
-
-Route::get('/admin/pengumuman', function () {
-    return view('admin.pengumuman');
-});
-
-Route::get('/admin/arsip', function () {
-    return view('admin.arsip');
-});
-
-// Mahasiswa
-Route::get('/mahasiswa/dashboard', function () {
-    return view('mahasiswa.dashboard');
-});
-
-Route::get('/mahasiswa/pengumuman', function () {
-    return view('mahasiswa.pengumuman');
-});
-
-Route::get('/mahasiswa/ajukan', function () {
-    return view('mahasiswa.ajukan');
-});
-
-Route::get('/mahasiswa/status', function () {
-    return view('mahasiswa.status');
-});
-
-Route::get('/mahasiswa/riwayat', function () {
-    return view('mahasiswa.riwayat');
-});
-
-// Kaprodi
-Route::get('/kaprodi/dashboard', function () {
-    return view('kaprodi.dashboard');
-});
-
-Route::get('/kaprodi/persetujuan-pengajuan', function () {
-    return view('kaprodi.persetujuan-pengajuan');
-});
-
-Route::get('/kaprodi/riwayat', function () {
-    return view('kaprodi.riwayat');
-});
-
-Route::get('/kaprodi/pengumuman', function () {
-    return view('kaprodi.pengumuman');
+        Route::view('/dashboard', 'kaprodi.dashboard');
+        Route::view('/persetujuan-pengajuan', 'kaprodi.persetujuan-pengajuan');
+        Route::view('/riwayat', 'kaprodi.riwayat');
+        Route::view('/pengumuman', 'kaprodi.pengumuman');
 });

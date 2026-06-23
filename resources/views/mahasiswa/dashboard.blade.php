@@ -16,9 +16,9 @@
 @section('content')
     <section class="mb-6 rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-700 p-6 text-white shadow-sm">
         <p class="text-sm text-cyan-100">Selamat datang,</p>
-        <h3 class="mt-1 text-2xl font-semibold">Budi Santoso</h3>
+        <h3 class="mt-1 text-2xl font-semibold">{{ auth()->user()->mahasiswa->nama }}</h3>
         <p class="mt-3 text-sm text-cyan-100">
-            NIM: 2021001 <span class="mx-2">·</span> Teknik Informatika
+            NIM: {{ auth()->user()->mahasiswa->nim }} <span class="mx-2">·</span> {{ auth()->user()->mahasiswa->prodi }}
         </p>
     </section>
 

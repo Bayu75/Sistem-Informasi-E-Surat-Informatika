@@ -126,14 +126,25 @@
                 </div>
 
                 <div>
-                    <p class="text-sm font-semibold">Siti Rahma, S.Kom</p>
-                    <p class="text-xs text-blue-100/60">admin@kampus.ac.id</p>
+                    <p class="text-sm font-semibold">
+                        {{ auth()->user()->adminTU->nama }}
+                    </p>
+                    <p class="text-xs text-blue-100/60">
+                        {{ auth()->user()->email }}
+                    </p>
                 </div>
             </div>
 
-            <a href="/login" class="text-sm text-blue-100/70 hover:text-white">
-                ↳ Logout
-            </a>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+
+                <button
+                    type="submit"
+                    class="text-sm text-blue-100/70 transition hover:text-white"
+                >
+                    ↳ Logout
+                </button>
+            </form>
         </div>
     </aside>
 
@@ -169,6 +180,12 @@
 
         {{-- Content --}}
         <main class="min-h-[calc(100vh-5rem)] p-4 lg:p-8">
+            @if(session('error'))
+                <div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             @yield('content')
         </main>
     </div>

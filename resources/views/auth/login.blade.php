@@ -53,12 +53,18 @@
                     </p>
                 </div>
 
-                <form action="#" method="POST" class="space-y-5">
+                @if ($errors->any())
+                    <div class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
+
+                <form action="{{ route('login') }}" method="POST" class="space-y-5">
                     @csrf
 
                     <div>
                         <label for="email" class="mb-2 block text-sm font-medium text-slate-700">
-                            Email / Username
+                            Email
                         </label>
 
                         <div class="relative">
@@ -87,9 +93,11 @@
                             </div>
 
                             <input
-                                type="text"
+                                type="email"
                                 id="email"
                                 name="email"
+                                value="{{ old('email') }}"
+                                required
                                 placeholder="email@kampus.ac.id"
                                 class="block w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-sm text-slate-700 placeholder:text-slate-400 shadow-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
                             >
@@ -134,6 +142,7 @@
                                 type="password"
                                 id="password"
                                 name="password"
+                                required
                                 placeholder="Masukkan password"
                                 class="block w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-sm text-slate-700 placeholder:text-slate-400 shadow-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
                             >

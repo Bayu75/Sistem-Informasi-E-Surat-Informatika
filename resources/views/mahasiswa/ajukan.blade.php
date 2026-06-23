@@ -123,22 +123,22 @@
                 <div class="grid gap-4 text-sm sm:grid-cols-2">
                     <div>
                         <p class="text-slate-400">Nama Lengkap</p>
-                        <p class="font-semibold text-slate-700">Budi Santoso</p>
+                        <p class="font-semibold text-slate-700">{{ auth()->user()->mahasiswa->nama }}</p>
                     </div>
 
                     <div>
                         <p class="text-slate-400">NIM</p>
-                        <p class="font-semibold text-slate-700">2021001</p>
+                        <p class="font-semibold text-slate-700">{{ auth()->user()->mahasiswa->nim }}</p>
                     </div>
 
                     <div>
                         <p class="text-slate-400">Program Studi</p>
-                        <p class="font-semibold text-slate-700">Teknik Informatika</p>
+                        <p class="font-semibold text-slate-700">{{ auth()->user()->mahasiswa->prodi }}</p>
                     </div>
 
                     <div>
                         <p class="text-slate-400">Email</p>
-                        <p class="font-semibold text-slate-700">budi@student.kampus.ac.id</p>
+                        <p class="font-semibold text-slate-700">{{ auth()->user()->email }}</p>
                     </div>
                 </div>
             </div>

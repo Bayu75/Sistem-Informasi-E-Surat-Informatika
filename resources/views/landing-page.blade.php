@@ -58,7 +58,7 @@
             </div>
 
             {{-- Kanan --}}
-            <a href=""
+            <a href="/login"
                class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
 
                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +124,7 @@
             <div
                 class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
 
-                <a href=""
+                <a href="/login"
                    class="inline-flex items-center justify-center gap-2 bg-white text-blue-700 px-6 py-3 rounded-xl font-semibold shadow-lg hover:scale-105 transition">
 
                     Masuk ke Sistem
@@ -271,7 +271,7 @@
                         📅 20 Mei 2025
                     </span>
 
-                    <a href="#"
+                    <a href="/login"
                        class="text-blue-600 text-sm font-medium">
                         Baca Selengkapnya →
                     </a>
@@ -310,7 +310,7 @@
                         📅 15 Mei 2025
                     </span>
 
-                    <a href="#" class="text-blue-600 text-sm font-medium">
+                    <a href="/login" class="text-blue-600 text-sm font-medium">
                         Baca Selengkapnya →
                     </a>
 
@@ -347,7 +347,7 @@
                         📅 10 Mei 2025
                     </span>
 
-                    <a href="#" class="text-blue-600 text-sm font-medium">
+                    <a href="/login" class="text-blue-600 text-sm font-medium">
                         Baca Selengkapnya →
                     </a>
 
@@ -360,12 +360,12 @@
         {{-- Button --}}
         <div class="flex justify-center mt-10">
 
-            <button
+            <a href="/login"
                 class="px-6 py-3 border border-blue-200 rounded-xl text-blue-600 text-sm font-medium hover:bg-blue-50 transition">
 
                 Lihat Semua Pengumuman →
 
-            </button>
+            </a>
 
         </div>
 
@@ -533,7 +533,7 @@
 
             </div>
 
-            <a href=""
+            <a href="/login"
                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition">
 
                 Ajukan Surat Sekarang

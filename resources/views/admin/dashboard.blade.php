@@ -153,7 +153,7 @@
     {{-- Welcome Banner --}}
     <section class="mb-6 rounded-2xl bg-gradient-to-r from-blue-700 to-blue-600 p-6 text-white shadow-sm">
         <p class="text-sm text-blue-100">Selamat datang,</p>
-        <h3 class="mt-1 text-2xl font-semibold">Siti Rahma, S.Kom</h3>
+        <h3 class="mt-1 text-2xl font-semibold">{{ auth()->user()->adminTU->nama }}</h3>
         <p class="mt-2 text-sm text-blue-100">
             Terdapat <span class="font-semibold text-white">2 pengajuan baru</span> yang menunggu verifikasi.
         </p>

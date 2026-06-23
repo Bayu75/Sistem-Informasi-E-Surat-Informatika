@@ -25,7 +25,7 @@
 <div>
     <section class="mb-6 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-700 p-6 text-white shadow-sm">
         <p class="text-sm text-violet-100">Selamat datang,</p>
-        <h3 class="mt-1 text-2xl font-semibold">Dr. Ahmad Fauzi, M.T.</h3>
+        <h3 class="mt-1 text-2xl font-semibold">{{ auth()->user()->kaprodi->nama }}</h3>
         <p class="mt-2 text-sm text-violet-100">
             Terdapat <span class="font-semibold text-white">1 pengajuan</span> yang menunggu keputusan Anda.
         </p>
