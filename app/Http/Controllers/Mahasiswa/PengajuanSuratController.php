@@ -32,15 +32,18 @@ class PengajuanSuratController extends Controller
         ]);
 
         $surat = JenisSurat::where('id', $request->jenis_surat_id)
-                            ->where('aktif', 1)
-                            ->first();
+            ->where('aktif', 1)
+            ->first();
 
         if (!$surat) {
-            return back()->with('error', 'Jenis surat tidak tersedia.');
+            return back()->with(
+                'error', 
+                'Jenis surat tidak tersedia.'
+            );
         }
 
         $file = $request->file('file_pengajuan')
-                        ->store('pengajuan', 'public');
+            ->store('pengajuan', 'public');
 
         $pengajuan = PengajuanSurat::create([
             'mahasiswa_id' => Auth::user()->mahasiswa->id,
@@ -91,35 +94,63 @@ class PengajuanSuratController extends Controller
     }
 
     public function riwayat()
-{
-    $pengajuans = PengajuanSurat::with('jenisSurat')
-        ->where('mahasiswa_id', Auth::user()->mahasiswa->id)
-        ->latest()
-        ->get();
+    {
+        $pengajuans = PengajuanSurat::with('jenisSurat')
+            ->where('mahasiswa_id', Auth::user()->mahasiswa->id)
+            ->latest()
+            ->get();
 
-    $pengajuanData = $pengajuans->map(function ($item) {
+        $pengajuanData = $pengajuans->map(function ($item) {
 
-        $status_label = match ($item->status) {
-            'menunggu_verifikasi' => 'Menunggu Verifikasi',
-            'diproses_kaprodi' => 'Diproses Kaprodi',
-            'disetujui' => 'Disetujui',
-            'ditolak' => 'Ditolak',
-            default => '-',
-        };
+            $tanggalKeputusan = null;
 
-        return [
-            'id' => $item->id,
-            'jenis' => $item->jenisSurat->nama_surat ?? '-',
-            'keperluan' => $item->keperluan,
-            'tanggal' => Carbon::parse($item->tanggal_pengajuan)->translatedFormat('d F Y'),
-            'status' => $status_label,
-            'catatan' => $item->catatan_admin ?? $item->catatan_kaprodi ?? '—',
-            'file_pengajuan' => $item->file_pengajuan,
-        ];
-    });
+            if ($item->tanggal_keputusan_kaprodi) {
+                $tanggalKeputusan =
+                    Carbon::parse(
+                        $item->tanggal_keputusan_kaprodi
+                    )->translatedFormat('d F Y');
+            } elseif ($item->tanggal_verifikasi_admin) {
+                $tanggalKeputusan =
+                    Carbon::parse(
+                        $item->tanggal_verifikasi_admin
+                    )->translatedFormat('d F Y');
+            }
 
-    $mahasiswa = Auth::user()->mahasiswa;
+            return [
+                'id' => $item->id,
+                'jenis' => $item->jenisSurat->nama_surat ?? '-',
+                'keperluan' => $item->keperluan,
+                'tanggal' => Carbon::parse(
+                    $item->tanggal_pengajuan
+                )->translatedFormat('d F Y'),
 
-    return view('mahasiswa.riwayat', compact('pengajuanData', 'mahasiswa'));
-}
+                'status' => $item->status,
+
+                'catatan' =>
+                    $item->catatan_admin ??
+                    $item->catatan_kaprodi ??
+                    null,
+
+                'penolak' => match ($item->status) {
+                    'ditolak_admin' => 'Admin TU',
+                    'ditolak_kaprodi' => 'Kaprodi',
+                    default => null,
+                },
+
+                'file_pengajuan' => $item->file_pengajuan,
+                'file_ttd' => $item->file_ttd,
+                'tanggal_keputusan' => $item->updated_at
+                ? Carbon::parse($item->updated_at)
+                    ->translatedFormat('d F Y')
+                : null,
+            ];
+        });
+
+        $mahasiswa = Auth::user()->mahasiswa;
+
+        return view(
+            'mahasiswa.riwayat',
+            compact('pengajuanData', 'mahasiswa')
+        );
+    }
 }

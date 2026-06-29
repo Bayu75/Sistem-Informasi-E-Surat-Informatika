@@ -31,6 +31,23 @@ class VerifikasiController extends Controller
         );
     }
 
+    public function arsip()
+    {
+        $pengajuan = PengajuanSurat::with([
+            'mahasiswa',
+            'jenisSurat'
+        ])
+        ->latest()
+        ->get();
+
+        $jenisSurat = JenisSurat::all();
+
+        return view(
+            'admin.arsip',
+            compact('pengajuan', 'jenisSurat')
+        );
+    }
+
     public function verifikasi($id)
     {
         $pengajuan = PengajuanSurat::findOrFail($id);
@@ -43,7 +60,9 @@ class VerifikasiController extends Controller
         }
 
         $pengajuan->update([
-            'status' => 'diverifikasi_admin'
+            'status' => 'diverifikasi_admin',
+            'tanggal_verifikasi_admin' => now(),
+            'catatan_admin' => null,
         ]);
 
         return back()->with(
@@ -70,6 +89,7 @@ class VerifikasiController extends Controller
         $pengajuan->update([
             'status' => 'ditolak_admin',
             'catatan_admin' => $request->catatan_admin,
+            'tanggal_verifikasi_admin' => now(),
         ]);
 
         return back()->with(

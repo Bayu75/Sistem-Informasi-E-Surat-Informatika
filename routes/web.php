@@ -2,15 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Mahasiswa\DashboardController;
 use App\Http\Controllers\PengumumanController;
 use Illuminate\Support\Facades\Auth;
-
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Mahasiswa\PengajuanSuratController;
 use App\Http\Controllers\Admin\VerifikasiController;
-    
-use App\Http\Controllers\Mahasiswa\DashboardController;
+use App\Http\Controllers\Admin\DashboardAdminController;
 
 // Landing Page
 Route::get('/', function () {
@@ -94,13 +91,11 @@ Route::prefix('admin')
     ->middleware(['auth', 'role:admin'])
     ->group(function () {
 
-        Route::view('/dashboard', 'admin.dashboard');
+        Route::get(
+            '/dashboard',
+            [DashboardAdminController::class, 'index']
+        )->name('admin.dashboard');
 
-        Route::view('/pengajuan-masuk', 'admin.pengajuan-masuk');
-
-        Route::view('/verifikasi', 'admin.verifikasi');
-
-        Route::view('/teruskan', 'admin.teruskan');
         Route::get('/pengumuman', [PengumumanController::class, 'index']);
         Route::post('/pengumuman', [PengumumanController::class, 'store'])
             ->name('admin.pengumuman.store');
@@ -111,9 +106,10 @@ Route::prefix('admin')
         Route::get('/pengumuman/{pengumuman}/download', [PengumumanController::class, 'download'])
             ->name('admin.pengumuman.download');
 
-        Route::view('/pengumuman', 'admin.pengumuman');
-
-        Route::view('/arsip', 'admin.arsip');
+        Route::get(
+            '/arsip',
+            [VerifikasiController::class, 'arsip']
+        )->name('admin.arsip');
 
         Route::get(
             '/pengajuan-masuk',

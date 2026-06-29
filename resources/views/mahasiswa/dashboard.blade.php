@@ -46,26 +46,6 @@
         </div>
     </section>
 
-    <a
-        href="/mahasiswa/ajukan"
-        class="mb-6 flex items-center justify-between rounded-2xl border border-dashed border-cyan-300 bg-white p-5 shadow-sm transition hover:bg-cyan-50"
-    >
-        <div class="flex items-center gap-4">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600">
-                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-            </div>
-
-            <div>
-                <h3 class="font-semibold text-slate-800">Ajukan Surat Baru</h3>
-                <p class="text-sm text-slate-500">Klik untuk mengisi formulir pengajuan surat online</p>
-            </div>
-        </div>
-
-        <span class="text-2xl text-slate-400">›</span>
-    </a>
-
     <section class="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
             <h3 class="text-lg font-semibold text-slate-800">Pengajuan Aktif</h3>
@@ -100,22 +80,28 @@
                     ● Menunggu Verifikasi
                 </span>
 
-            @elseif($pengajuan->status == 'diteruskan_ke_kaprodi')
+            @elseif($pengajuan->status == 'diverifikasi_admin')
 
                 <span class="rounded-full border border-blue-300 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-                    ● Diproses Kaprodi
+                    ● Diverifikasi Admin
                 </span>
 
-            @elseif($pengajuan->status == 'disetujui')
+            @elseif($pengajuan->status == 'disetujui_kaprodi')
 
                 <span class="rounded-full border border-green-300 bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
-                    ● Disetujui
+                    ● Disetujui Kaprodi
                 </span>
 
-            @elseif($pengajuan->status == 'ditolak')
+            @elseif($pengajuan->status == 'ditolak_admin')
 
                 <span class="rounded-full border border-red-300 bg-red-50 px-3 py-1 text-xs font-semibold text-red-700">
-                    ● Ditolak
+                    ● Ditolak Admin
+                </span>
+
+            @elseif($pengajuan->status == 'ditolak_kaprodi')
+
+                <span class="rounded-full border border-red-300 bg-red-50 px-3 py-1 text-xs font-semibold text-red-700">
+                    ● Ditolak Kaprodi
                 </span>
 
             @endif

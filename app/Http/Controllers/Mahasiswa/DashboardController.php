@@ -23,7 +23,7 @@ class DashboardController extends Controller
         )
         ->whereIn('status', [
             'menunggu_verifikasi',
-            'diteruskan_ke_kaprodi'
+            'diverifikasi_admin'
         ])
         ->count();
 
@@ -31,21 +31,27 @@ class DashboardController extends Controller
             'mahasiswa_id',
             $mahasiswa->id
         )
-        ->where('status', 'disetujui')
+        ->where('status', 'disetujui_kaprodi')
         ->count();
 
         $ditolak = PengajuanSurat::where(
             'mahasiswa_id',
             $mahasiswa->id
         )
-        ->where('status', 'ditolak')
+        ->where('status', [
+            'ditolak_admin',
+            'ditolak_kaprodi'
+        ])
         ->count();
 
         $pengajuanAktif = PengajuanSurat::with('jenisSurat')
             ->where('mahasiswa_id', $mahasiswa->id)
             ->whereIn('status', [
                 'menunggu_verifikasi',
-                'diteruskan_ke_kaprodi'
+                'diverifikasi_admin',
+                'ditolak_admin',
+                'disetujui_kaprodi',
+                'ditolak_kaprodi'
             ])
             ->latest()
             ->take(5)
