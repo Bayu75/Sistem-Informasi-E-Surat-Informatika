@@ -5,64 +5,21 @@
 
 @php
     $activeMenu = 'pengumuman';
+@endphp
 
-    $announcements = [
-        [
-            'id' => 'P1',
-            'kategori' => 'Akademik',
-            'title' => 'Jadwal Ujian Akhir Semester (UAS) Genap 2024/2025',
-            'desc' => 'UAS semester genap akan dilaksanakan pada tanggal 9-20 Juni 2025. Mahasiswa wajib hadir tepat waktu.',
-            'content' => 'Kepada seluruh mahasiswa Teknik Informatika, diberitahukan bahwa Ujian Akhir Semester (UAS) Genap 2024/2025 akan dilaksanakan pada tanggal 9 - 20 Juni 2025. Mahasiswa wajib hadir 15 menit sebelum ujian dimulai, membawa KTM, dan berpakaian rapi.',
-            'date' => '20 Mei 2025',
-            'file' => 'Jadwal_UAS_Genap_2025.pdf',
-            'size' => '342 KB',
-            'author' => 'Siti Rahma, S.Kom',
-        ],
-        [
-            'id' => 'P2',
-            'kategori' => 'Beasiswa',
-            'title' => 'Pendaftaran Beasiswa Bidikmisi Tahap 2 Tahun 2025',
-            'desc' => 'Pendaftaran beasiswa Bidikmisi tahap 2 dibuka mulai 1 Juni 2025. Segera lengkapi berkas persyaratan.',
-            'content' => 'Pendaftaran Beasiswa Bidikmisi Tahap 2 Tahun 2025 dibuka untuk mahasiswa yang memenuhi persyaratan. Mahasiswa diharapkan membaca panduan resmi dan menyiapkan dokumen pendukung.',
-            'date' => '15 Mei 2025',
-            'file' => 'Pengumuman_Beasiswa_Bidikmisi_2025.pdf',
-            'size' => '215 KB',
-            'author' => 'Siti Rahma, S.Kom',
-        ],
-        [
-            'id' => 'P3',
-            'kategori' => 'Akademik',
-            'title' => 'Pengumuman Wisuda Periode Agustus 2025',
-            'desc' => 'Wisuda periode Agustus 2025 akan dilaksanakan pada 23 Agustus 2025. Pendaftaran dibuka mulai 1 Juli 2025.',
-            'content' => 'Wisuda periode Agustus 2025 akan dilaksanakan pada 23 Agustus 2025. Pendaftaran dibuka mulai 1 Juli 2025.',
-            'date' => '10 Mei 2025',
-            'file' => null,
-            'size' => null,
-            'author' => 'Siti Rahma, S.Kom',
-        ],
-        [
-            'id' => 'P4',
-            'kategori' => 'Akademik',
-            'title' => 'Pengisian KRS Online Semester Ganjil 2025/2026',
-            'desc' => 'Pengisian KRS semester ganjil 2025/2026 dimulai 15 Juni 2025. Konsultasikan dengan dosen wali terlebih dahulu.',
-            'content' => 'Pengisian KRS semester ganjil 2025/2026 dimulai 15 Juni 2025. Mahasiswa wajib konsultasi dengan dosen wali.',
-            'date' => '5 Mei 2025',
-            'file' => null,
-            'size' => null,
-            'author' => 'Siti Rahma, S.Kom',
-        ],
-        [
-            'id' => 'P5',
-            'kategori' => 'Kemahasiswaan',
-            'title' => 'Informasi Pelaksanaan PKL dan Magang Semester Genap',
-            'desc' => 'PKL dan magang semester genap dapat dilaksanakan mulai 1 Juli 2025. Segera ajukan surat pengantar.',
-            'content' => 'PKL dan magang semester genap dapat dilaksanakan mulai 1 Juli 2025. Mahasiswa dapat mengajukan surat pengantar melalui sistem SIERA.',
-            'date' => '28 April 2025',
-            'file' => null,
-            'size' => null,
-            'author' => 'Siti Rahma, S.Kom',
-        ],
+@php
+$announcements = $pengumuman->map(function ($item) {
+    return [
+        'id' => $item->id,
+        'kategori' => $item->kategori,
+        'title' => $item->judul,
+        'desc' => $item->ringkasan,
+        'content' => $item->isi,
+        'date' => \Carbon\Carbon::parse($item->tanggal)->format('d M Y'),
+        'file' => $item->nama_file_asli ?? $item->file,
+        'author' => optional($item->creator)->email,
     ];
+});
 @endphp
 
 @section('content')
@@ -96,7 +53,7 @@
     <template x-if="mode === 'list'">
         <div>
             <p class="mb-4 text-sm text-slate-600">
-                <b>{{ count($announcements) }}</b> total pengumuman
+                <b>{{ $pengumuman->count() }}</b> total pengumuman
             </p>
 
             <div class="mb-5">
@@ -143,11 +100,7 @@
                                             <div class="flex min-w-0 items-center gap-3">
                                                 <span class="rounded-md bg-red-50 px-2 py-1 text-xs font-bold text-red-500">PDF</span>
                                                 <span class="truncate text-sm text-slate-600" x-text="item.file"></span>
-                                            </div>
-                                            <div class="flex gap-3 text-xs font-semibold">
-                                                <span class="text-slate-400" x-text="item.size"></span>
-                                                <a href="#" class="text-violet-600">Unduh PDF</a>
-                                            </div>
+                                            </div>                                            
                                         </div>
                                     </div>
                                 </template>
@@ -201,16 +154,22 @@
                             <div class="flex min-w-0 items-center gap-3">
                                 <div class="rounded-lg bg-white px-3 py-2 text-xs font-bold text-red-500">PDF</div>
                                 <div class="min-w-0">
-                                    <p class="truncate font-semibold text-slate-700" x-text="selected?.file"></p>
-                                    <p class="text-xs text-slate-400" x-text="selected?.size"></p>
+                                    <p class="truncate font-semibold text-slate-700" x-text="selected?.file"></p>                                   
                                 </div>
                             </div>
 
                             <div class="ml-3 flex shrink-0 gap-3">
-                                <a href="#" class="rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-semibold text-violet-600">
+                                <a
+                                    :href="'/kaprodi/pengumuman/' + selected.id + '/lihat'"
+                                    target="_blank"
+                                    class="rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-semibold text-violet-600"
+                                >
                                     Lihat
                                 </a>
-                                <a href="#" class="rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white">
+                               <a
+                                    :href="'/kaprodi/pengumuman/' + selected.id + '/download'"
+                                    class="rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white"
+                                >
                                     Unduh PDF
                                 </a>
                             </div>
