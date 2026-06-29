@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Mahasiswa\PengajuanSuratController;
+    
 
 // Landing Page
 Route::get('/', function () {
@@ -36,10 +38,30 @@ Route::prefix('mahasiswa')
     ->group(function () {
 
         Route::view('/dashboard', 'mahasiswa.dashboard');
+
         Route::view('/pengumuman', 'mahasiswa.pengumuman');
-        Route::view('/ajukan', 'mahasiswa.ajukan');
-        Route::view('/status', 'mahasiswa.status');
+
+        Route::get(
+            '/ajukan',
+            [PengajuanSuratController::class, 'create']
+        )->name('pengajuan.create');
+
+        Route::post(
+            '/ajukan',
+            [PengajuanSuratController::class, 'store']
+        )->name('pengajuan.store');
+
+        Route::get(
+            '/status',
+            [PengajuanSuratController::class, 'status']
+        )->name('pengajuan.status');
+
         Route::view('/riwayat', 'mahasiswa.riwayat');
+
+        Route::get(
+            '/template/{id}',
+            [PengajuanSuratController::class, 'downloadTemplate']
+        )->name('template.download');
 });
 
 // admin

@@ -15,9 +15,9 @@ class MahasiswaSeeder extends Seeder
     {
         Mahasiswa::create([
             'user_id' => 1,
-            'nama' => 'Bayu',
-            'nim' => '2308561012',
-            'angkatan' => '2023',
+            'nama' => 'Kadek Bayu Dwi Pradnya',
+            'nim' => '2408561059',
+            'angkatan' => '2024',
             'prodi' => 'Informatika',
         ]);
     }

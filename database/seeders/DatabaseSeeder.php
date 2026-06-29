@@ -10,6 +10,7 @@ use Database\Seeders\UserSeeder;
 use Database\Seeders\MahasiswaSeeder;
 use Database\Seeders\AdminTUSeeder;
 use Database\Seeders\KaprodiSeeder;
+use Database\Seeders\JenisSuratSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,6 +28,10 @@ class DatabaseSeeder extends Seeder
             MahasiswaSeeder::class,
             AdminTUSeeder::class,
             KaprodiSeeder::class,
+        ]);
+
+        $this->call([
+            JenisSuratSeeder::class,
         ]);
     }
 }
