@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PengumumanController;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\AuthController;
@@ -98,6 +101,15 @@ Route::prefix('admin')
         Route::view('/verifikasi', 'admin.verifikasi');
 
         Route::view('/teruskan', 'admin.teruskan');
+        Route::get('/pengumuman', [PengumumanController::class, 'index']);
+        Route::post('/pengumuman', [PengumumanController::class, 'store'])
+            ->name('admin.pengumuman.store');
+        Route::delete('/pengumuman/{pengumuman}', [PengumumanController::class, 'destroy'])
+            ->name('admin.pengumuman.destroy');
+        Route::get('/pengumuman/{pengumuman}/lihat', [PengumumanController::class, 'lihat'])
+            ->name('admin.pengumuman.lihat');
+        Route::get('/pengumuman/{pengumuman}/download', [PengumumanController::class, 'download'])
+            ->name('admin.pengumuman.download');
 
         Route::view('/pengumuman', 'admin.pengumuman');
 
