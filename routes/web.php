@@ -128,7 +128,7 @@ Route::prefix('admin')
 });
 
 Route::prefix('kaprodi')
-    ->middleware(['auth', 'role:kaprodi'])
+    ->middleware(['auth', 'role:kaprodi,admin'])
     ->group(function () {
 
         Route::view('/dashboard', 'kaprodi.dashboard');
@@ -137,5 +137,21 @@ Route::prefix('kaprodi')
 
         Route::view('/riwayat', 'kaprodi.riwayat');
 
-        Route::view('/pengumuman', 'kaprodi.pengumuman');
+        Route::get('/pengumuman', [PengumumanController::class, 'kaprodi'])
+        ->name('kaprodi.pengumuman');
+
+        Route::get('/pengumuman/{pengumuman}/lihat', [PengumumanController::class, 'lihat'])
+        ->name('kaprodi.pengumuman.lihat');
+
+        Route::get('/pengumuman/{pengumuman}/download', [PengumumanController::class, 'download'])
+        ->name('kaprodi.pengumuman.download');
+      
+        Route::get('/debug-auth', function () {
+        return [
+        'check' => auth()->check(),
+        'user' => auth()->user(),
+        'session_id' => session()->getId(),
+            ];
+        });
+
     });
