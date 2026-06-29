@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Mahasiswa\PengajuanSuratController;
+use App\Http\Controllers\Admin\VerifikasiController;
+    
 use App\Http\Controllers\Mahasiswa\DashboardController;
 
 // Landing Page
@@ -100,12 +102,22 @@ Route::prefix('admin')
         Route::view('/pengumuman', 'admin.pengumuman');
 
         Route::view('/arsip', 'admin.arsip');
-    });
 
+        Route::get(
+            '/pengajuan-masuk',
+            [VerifikasiController::class, 'index']
+        )->name('admin.pengajuan');
 
-// ==============================
-// KAPRODI
-// ==============================
+        Route::put(
+            '/pengajuan/{id}/verifikasi',
+            [VerifikasiController::class, 'verifikasi']
+        )->name('admin.verifikasi');
+
+        Route::put(
+            '/pengajuan/{id}/tolak',
+            [VerifikasiController::class, 'tolak']
+        )->name('admin.tolak');
+});
 
 Route::prefix('kaprodi')
     ->middleware(['auth', 'role:kaprodi'])
