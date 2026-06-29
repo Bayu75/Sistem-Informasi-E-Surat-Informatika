@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\PengajuanSurat;
 
 class Mahasiswa extends Model
 {
@@ -20,5 +21,10 @@ class Mahasiswa extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function pengajuanSurat()
+    {
+        return $this->hasMany(PengajuanSurat::class);
     }
 }
