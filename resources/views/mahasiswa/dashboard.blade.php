@@ -25,22 +25,24 @@
     <section class="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div class="rounded-2xl border-2 border-blue-500 bg-white p-5 shadow-sm">
             <p class="text-sm text-slate-500">Total Pengajuan</p>
-            <p class="mt-2 text-3xl font-semibold text-blue-600">2</p>
+            <p class="mt-2 text-3xl font-semibold text-blue-600">
+                {{ $totalPengajuan }}
+            </p>
         </div>
 
         <div class="rounded-2xl border-2 border-amber-500 bg-white p-5 shadow-sm">
             <p class="text-sm text-slate-500">Sedang Diproses</p>
-            <p class="mt-2 text-3xl font-semibold text-amber-600">1</p>
+            <p class="mt-2 text-3xl font-semibold text-amber-600">{{ $sedangDiproses }}</p>
         </div>
 
         <div class="rounded-2xl border-2 border-emerald-500 bg-white p-5 shadow-sm">
             <p class="text-sm text-slate-500">Disetujui</p>
-            <p class="mt-2 text-3xl font-semibold text-emerald-600">0</p>
+            <p class="mt-2 text-3xl font-semibold text-emerald-600">{{ $disetujui }}</p>
         </div>
 
         <div class="rounded-2xl border-2 border-red-500 bg-white p-5 shadow-sm">
             <p class="text-sm text-slate-500">Ditolak</p>
-            <p class="mt-2 text-3xl font-semibold text-red-600">1</p>
+            <p class="mt-2 text-3xl font-semibold text-red-600">{{ $ditolak }}</p>
         </div>
     </section>
 
@@ -67,26 +69,68 @@
     <section class="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
             <h3 class="text-lg font-semibold text-slate-800">Pengajuan Aktif</h3>
-            <a href="/mahasiswa/status" class="text-sm font-semibold text-cyan-600">Lihat semua ›</a>
+            <a href="/mahasiswa/status" class="text-sm font-semibold text-cyan-600">
+                Lihat semua ›
+            </a>
         </div>
 
-        <div class="flex items-center justify-between px-5 py-4">
+    @forelse($pengajuanAktif as $pengajuan)
+        <div class="flex items-center justify-between px-5 py-4 border-b-0 last:border-b-0">
             <div class="flex items-center gap-3">
+
                 <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600">
                     📄
                 </div>
 
                 <div>
-                    <p class="font-semibold text-slate-700">Surat Keterangan Aktif Kuliah</p>
-                    <p class="text-sm text-slate-400">20 Mei 2025</p>
+                    <p class="font-semibold text-slate-700">
+                        {{ $pengajuan->jenisSurat->nama_surat }}
+                    </p>
+
+                    <p class="text-sm text-slate-400">
+                        {{ \Carbon\Carbon::parse($pengajuan->tanggal_pengajuan)->translatedFormat('d F Y') }}
+                    </p>
                 </div>
+
             </div>
 
-            <span class="rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
-                ● Menunggu Verifikasi
-            </span>
+            @if($pengajuan->status == 'menunggu_verifikasi')
+
+                <span class="rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+                    ● Menunggu Verifikasi
+                </span>
+
+            @elseif($pengajuan->status == 'diteruskan_ke_kaprodi')
+
+                <span class="rounded-full border border-blue-300 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                    ● Diproses Kaprodi
+                </span>
+
+            @elseif($pengajuan->status == 'disetujui')
+
+                <span class="rounded-full border border-green-300 bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+                    ● Disetujui
+                </span>
+
+            @elseif($pengajuan->status == 'ditolak')
+
+                <span class="rounded-full border border-red-300 bg-red-50 px-3 py-1 text-xs font-semibold text-red-700">
+                    ● Ditolak
+                </span>
+
+            @endif
+
         </div>
-    </section>
+
+    @empty
+
+        <div class="px-5 py-8 text-center text-slate-500">
+            Belum ada pengajuan aktif.
+        </div>
+
+    @endforelse
+
+</section>
 
     <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">

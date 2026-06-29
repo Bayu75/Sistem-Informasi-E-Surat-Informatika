@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\JenisSurat;
 use App\Models\PengajuanSurat;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class PengajuanSuratController extends Controller
 {
@@ -88,4 +89,37 @@ class PengajuanSuratController extends Controller
 
         return response()->download($path);
     }
+
+    public function riwayat()
+{
+    $pengajuans = PengajuanSurat::with('jenisSurat')
+        ->where('mahasiswa_id', Auth::user()->mahasiswa->id)
+        ->latest()
+        ->get();
+
+    $pengajuanData = $pengajuans->map(function ($item) {
+
+        $status_label = match ($item->status) {
+            'menunggu_verifikasi' => 'Menunggu Verifikasi',
+            'diproses_kaprodi' => 'Diproses Kaprodi',
+            'disetujui' => 'Disetujui',
+            'ditolak' => 'Ditolak',
+            default => '-',
+        };
+
+        return [
+            'id' => $item->id,
+            'jenis' => $item->jenisSurat->nama_surat ?? '-',
+            'keperluan' => $item->keperluan,
+            'tanggal' => Carbon::parse($item->tanggal_pengajuan)->translatedFormat('d F Y'),
+            'status' => $status_label,
+            'catatan' => $item->catatan_admin ?? $item->catatan_kaprodi ?? '—',
+            'file_pengajuan' => $item->file_pengajuan,
+        ];
+    });
+
+    $mahasiswa = Auth::user()->mahasiswa;
+
+    return view('mahasiswa.riwayat', compact('pengajuanData', 'mahasiswa'));
+}
 }

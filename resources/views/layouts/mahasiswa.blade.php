@@ -37,16 +37,24 @@
             </div>
         </div>
 
-        @php
-            $menus = [
-                ['label' => 'Dashboard', 'url' => '/mahasiswa/dashboard', 'key' => 'dashboard', 'icon' => 'grid'],
-                ['label' => 'Pengumuman', 'url' => '/mahasiswa/pengumuman', 'key' => 'pengumuman', 'icon' => 'bell'],
-                ['label' => 'Ajukan Surat', 'url' => '/mahasiswa/ajukan', 'key' => 'ajukan', 'icon' => 'file'],
-                ['label' => 'Status Pengajuan', 'url' => '/mahasiswa/status', 'key' => 'status', 'icon' => 'clock', 'badge' => 1],
-                ['label' => 'Riwayat Pengajuan', 'url' => '/mahasiswa/riwayat', 'key' => 'riwayat', 'icon' => 'history'],
-            ];
 
-            $active = $activeMenu ?? '';
+@php
+    $active = $active ?? '';
+@endphp
+        @php
+        $menus = [
+            ['label' => 'Dashboard', 'url' => '/mahasiswa/dashboard', 'key' => 'dashboard', 'icon' => 'grid'],
+            ['label' => 'Pengumuman', 'url' => '/mahasiswa/pengumuman', 'key' => 'pengumuman', 'icon' => 'bell'],
+            ['label' => 'Ajukan Surat', 'url' => '/mahasiswa/ajukan', 'key' => 'ajukan', 'icon' => 'file'],
+            [
+                'label' => 'Status Pengajuan',
+                'url' => '/mahasiswa/status',
+                'key' => 'status',
+                'icon' => 'clock',
+                'badge' => $jumlahNotifikasi
+            ],
+            ['label' => 'Riwayat Pengajuan', 'url' => '/mahasiswa/riwayat', 'key' => 'riwayat', 'icon' => 'history'],
+        ];
         @endphp
 
         <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-5">

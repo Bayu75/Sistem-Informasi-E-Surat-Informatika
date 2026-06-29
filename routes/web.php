@@ -1,11 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
+
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Mahasiswa\PengajuanSuratController;
 use App\Http\Controllers\Admin\VerifikasiController;
     
+use App\Http\Controllers\Mahasiswa\DashboardController;
 
 // Landing Page
 Route::get('/', function () {
@@ -24,24 +26,34 @@ Route::get('/', function () {
 
 // Login
 Route::middleware('guest')->group(function () {
+
     Route::get('/login', [AuthController::class, 'index'])
         ->name('login');
 
     Route::post('/login', [AuthController::class, 'authenticate']);
 });
 
+// Logout
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
-// mahasiswa
+
+// ==============================
+// MAHASISWA
+// ==============================
+
 Route::prefix('mahasiswa')
     ->middleware(['auth', 'role:mahasiswa'])
     ->group(function () {
 
-        Route::view('/dashboard', 'mahasiswa.dashboard');
+        // Dashboard
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('mahasiswa.dashboard');
 
+        // Pengumuman
         Route::view('/pengumuman', 'mahasiswa.pengumuman');
 
+        // Ajukan Surat
         Route::get(
             '/ajukan',
             [PengajuanSuratController::class, 'create']
@@ -52,28 +64,43 @@ Route::prefix('mahasiswa')
             [PengajuanSuratController::class, 'store']
         )->name('pengajuan.store');
 
+        // Status Pengajuan
         Route::get(
             '/status',
             [PengajuanSuratController::class, 'status']
         )->name('pengajuan.status');
 
-        Route::view('/riwayat', 'mahasiswa.riwayat');
+        Route::get(
+        '/riwayat',
+        [PengajuanSuratController::class, 'riwayat']
+        )->name('pengajuan.riwayat');
 
+        // Download Template
         Route::get(
             '/template/{id}',
             [PengajuanSuratController::class, 'downloadTemplate']
         )->name('template.download');
+
+        Route::get(
+            '/status/{id}',
+            [PengajuanSuratController::class, 'status']
+        )->name('pengajuan.status');
 });
 
-// admin
 Route::prefix('admin')
     ->middleware(['auth', 'role:admin'])
     ->group(function () {
 
         Route::view('/dashboard', 'admin.dashboard');
+
+        Route::view('/pengajuan-masuk', 'admin.pengajuan-masuk');
+
         Route::view('/verifikasi', 'admin.verifikasi');
+
         Route::view('/teruskan', 'admin.teruskan');
+
         Route::view('/pengumuman', 'admin.pengumuman');
+
         Route::view('/arsip', 'admin.arsip');
 
         Route::get(
@@ -92,13 +119,15 @@ Route::prefix('admin')
         )->name('admin.tolak');
 });
 
-// kaprodi
 Route::prefix('kaprodi')
     ->middleware(['auth', 'role:kaprodi'])
     ->group(function () {
 
         Route::view('/dashboard', 'kaprodi.dashboard');
+
         Route::view('/persetujuan-pengajuan', 'kaprodi.persetujuan-pengajuan');
+
         Route::view('/riwayat', 'kaprodi.riwayat');
+
         Route::view('/pengumuman', 'kaprodi.pengumuman');
-});
+    });
