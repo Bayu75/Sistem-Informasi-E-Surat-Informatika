@@ -5,99 +5,6 @@
 
 @php
     $activeMenu = 'pengajuan-masuk';
-
-    $pengajuan = [
-        [
-            'id' => 'S7',
-            'nama' => 'Ahmad Rizal',
-            'nim' => '2022010',
-            'jenis' => 'Surat Dispensasi',
-            'tanggal' => '22 Mei 2025',
-            'status' => 'Menunggu Verifikasi',
-            'waktu' => 'minggu_ini',
-            'urutan' => 9,
-        ],
-        [
-            'id' => 'S1',
-            'nama' => 'Budi Santoso',
-            'nim' => '2021001',
-            'jenis' => 'Surat Keterangan Aktif Kuliah',
-            'tanggal' => '20 Mei 2025',
-            'status' => 'Menunggu Verifikasi',
-            'waktu' => 'minggu_ini',
-            'urutan' => 8,
-        ],
-        [
-            'id' => 'S3',
-            'nama' => 'Maya Sari',
-            'nim' => '2021045',
-            'jenis' => 'Surat Cuti Kuliah',
-            'tanggal' => '19 Mei 2025',
-            'status' => 'Diverifikasi Admin',
-            'waktu' => 'minggu_ini',
-            'urutan' => 7,
-        ],
-        [
-            'id' => 'S2',
-            'nama' => 'Dewi Rahayu',
-            'nim' => '2021002',
-            'jenis' => 'Surat Pengantar PKL/Magang',
-            'tanggal' => '18 Mei 2025',
-            'status' => 'Diverifikasi Admin',
-            'waktu' => 'minggu_ini',
-            'urutan' => 6,
-        ],
-        [
-            'id' => 'S8',
-            'nama' => 'Rizky Pratama',
-            'nim' => '2020015',
-            'jenis' => 'Surat Permohonan Beasiswa',
-            'tanggal' => '15 Mei 2025',
-            'status' => 'Diteruskan ke Kaprodi',
-            'waktu' => 'bulan_ini',
-            'urutan' => 5,
-        ],
-        [
-            'id' => 'S1B',
-            'nama' => 'Budi Santoso',
-            'nim' => '2021001',
-            'jenis' => 'Surat Dispensasi',
-            'tanggal' => '10 Mei 2025',
-            'status' => 'Ditolak',
-            'waktu' => 'bulan_ini',
-            'urutan' => 4,
-        ],
-        [
-            'id' => 'S4',
-            'nama' => 'Anisa Putri',
-            'nim' => '2020020',
-            'jenis' => 'Surat Keterangan Aktif Kuliah',
-            'tanggal' => '10 Mei 2025',
-            'status' => 'Disetujui',
-            'waktu' => 'bulan_ini',
-            'urutan' => 3,
-        ],
-        [
-            'id' => 'S5',
-            'nama' => 'Fauzan Malik',
-            'nim' => '2021030',
-            'jenis' => 'Surat Rekomendasi',
-            'tanggal' => '8 Mei 2025',
-            'status' => 'Ditolak',
-            'waktu' => 'bulan_ini',
-            'urutan' => 2,
-        ],
-        [
-            'id' => 'S6',
-            'nama' => 'Sari Wulandari',
-            'nim' => '2019005',
-            'jenis' => 'Surat Keterangan Lulus',
-            'tanggal' => '25 Apr 2025',
-            'status' => 'Disetujui',
-            'waktu' => 'bulan_ini',
-            'urutan' => 1,
-        ],
-    ];
 @endphp
 
 @section('content')
@@ -109,7 +16,6 @@
         search: '',
         jenis: '',
         status: '',
-        waktu: '',
         sort: 'terbaru',
 
         selectedItem: null,
@@ -117,40 +23,60 @@
         items: @js($pengajuan),
 
         get filteredItems() {
-            let result = this.items.filter((item) => {
+            let result = this.items.filter(item => {
+
                 const keyword = this.search.toLowerCase();
 
+                const nama =
+                    item.mahasiswa?.nama?.toLowerCase() || '';
+
+                const nim =
+                    item.mahasiswa?.nim?.toLowerCase() || '';
+
+                const jenis =
+                    item.jenis_surat?.nama_surat || '';
+
                 const matchSearch =
-                    item.nama.toLowerCase().includes(keyword) ||
-                    item.nim.toLowerCase().includes(keyword) ||
-                    item.id.toLowerCase().includes(keyword);
+                    nama.includes(keyword) ||
+                    nim.includes(keyword);
 
                 const matchJenis =
-                    this.jenis === '' || item.jenis === this.jenis;
+                    this.jenis === '' ||
+                    jenis === this.jenis;
 
                 const matchStatus =
-                    this.status === '' || item.status === this.status;
+                    this.status === '' ||
+                    item.status === this.status;
 
-                const matchWaktu =
-                    this.waktu === '' || item.waktu === this.waktu;
-
-                return matchSearch && matchJenis && matchStatus && matchWaktu;
+                return matchSearch &&
+                    matchJenis &&
+                    matchStatus;
             });
 
             if (this.sort === 'nama_az') {
-                result.sort((a, b) => a.nama.localeCompare(b.nama));
+                result.sort((a, b) =>
+                    a.mahasiswa.nama.localeCompare(b.mahasiswa.nama)
+                );
             }
 
             if (this.sort === 'nama_za') {
-                result.sort((a, b) => b.nama.localeCompare(a.nama));
+                result.sort((a, b) =>
+                    b.mahasiswa.nama.localeCompare(a.mahasiswa.nama)
+                );
             }
 
             if (this.sort === 'terbaru') {
-                result.sort((a, b) => b.urutan - a.urutan);
+                result.sort((a, b) =>
+                    new Date(b.created_at) -
+                    new Date(a.created_at)
+                );
             }
 
             if (this.sort === 'terlama') {
-                result.sort((a, b) => a.urutan - b.urutan);
+                result.sort((a, b) =>
+                    new Date(a.created_at) -
+                    new Date(b.created_at)
+                );
             }
 
             return result;
@@ -160,12 +86,12 @@
             this.search = '';
             this.jenis = '';
             this.status = '';
-            this.waktu = '';
             this.sort = 'terbaru';
         },
 
         openDetail(item) {
             this.selectedItem = item;
+            this.rejectOpen = false;
             this.detailOpen = true;
         },
 
@@ -175,10 +101,9 @@
         }
     }"
 >
->
     {{-- Filter --}}
     <section class="mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div class="grid gap-3 xl:grid-cols-[1fr_180px_160px_150px_150px_100px]">
+        <div class="grid gap-3 xl:grid-cols-[1fr_250px_150px_150px_100px]">
             {{-- Search --}}
             <div class="relative">
                 <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -197,7 +122,7 @@
                     type="text"
                     x-model="search"
                     placeholder="Cari nama mahasiswa atau NIM..."
-                    class="h-11 w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-11 pr-4 text-sm text-slate-700 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                    class="h-11 w-full rounded-xl border border-slate-200 pl-11 pr-4 text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                 >
             </div>
 
@@ -207,13 +132,12 @@
                 class="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             >
                 <option value="">Semua Jenis Surat</option>
-                <option value="Surat Keterangan Aktif Kuliah">Surat Keterangan Aktif Kuliah</option>
-                <option value="Surat Dispensasi">Surat Dispensasi</option>
-                <option value="Surat Cuti Kuliah">Surat Cuti Kuliah</option>
-                <option value="Surat Pengantar PKL/Magang">Surat Pengantar PKL/Magang</option>
-                <option value="Surat Permohonan Beasiswa">Surat Permohonan Beasiswa</option>
-                <option value="Surat Rekomendasi">Surat Rekomendasi</option>
-                <option value="Surat Keterangan Lulus">Surat Keterangan Lulus</option>
+
+                @foreach($jenisSurat as $jenis)
+                    <option value="{{ $jenis->nama_surat }}">
+                        {{ $jenis->nama_surat }}
+                    </option>
+                @endforeach
             </select>
 
             {{-- Status --}}
@@ -222,22 +146,9 @@
                 class="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             >
                 <option value="">Semua Status</option>
-                <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
-                <option value="Diverifikasi Admin">Diverifikasi Admin</option>
-                <option value="Diteruskan ke Kaprodi">Diteruskan ke Kaprodi</option>
-                <option value="Disetujui">Disetujui</option>
-                <option value="Ditolak">Ditolak</option>
-            </select>
-
-            {{-- Waktu --}}
-            <select
-                x-model="waktu"
-                class="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-            >
-                <option value="">Semua Waktu</option>
-                <option value="hari_ini">Hari Ini</option>
-                <option value="minggu_ini">Minggu Ini</option>
-                <option value="bulan_ini">Bulan Ini</option>
+                <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
+                <option value="diverifikasi_admin">Diverifikasi Admin</option>
+                <option value="ditolak_admin">Ditolak Admin</option>
             </select>
 
             {{-- Sort --}}
@@ -247,8 +158,6 @@
             >
                 <option value="terbaru">Terbaru Dulu</option>
                 <option value="terlama">Terlama Dulu</option>
-                <option value="nama_az">Nama A-Z</option>
-                <option value="nama_za">Nama Z-A</option>
             </select>
 
             {{-- Reset --}}
@@ -297,74 +206,84 @@
                 </thead>
 
                 <tbody class="divide-y divide-slate-100">
-                    <template x-for="item in filteredItems" :key="item.id">
-                        <tr>
-                            <td class="px-5 py-4">
-                                <div class="flex items-center gap-3">
-                                    <span
-                                        class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-600"
-                                        x-text="item.nama.charAt(0)"
-                                    ></span>
 
-                                    <span x-text="item.nama"></span>
-                                </div>
+                    <template x-for="item in filteredItems" :key="item.id">
+                        <tr class="hover:bg-slate-50 transition">
+
+                            <td class="px-5 py-4">
+                                <div
+                                    class="font-medium text-slate-700"
+                                    x-text="item.mahasiswa.nama"
+                                ></div>
                             </td>
 
-                            <td class="px-5 py-4" x-text="item.nim"></td>
+                            <td
+                                class="px-5 py-4 text-slate-600"
+                                x-text="item.mahasiswa.nim"
+                            ></td>
 
-                            <td class="px-5 py-4" x-text="item.jenis"></td>
+                            <td
+                                class="px-5 py-4 text-slate-600"
+                                x-text="item.jenis_surat.nama_surat"
+                            ></td>
 
-                            <td class="px-5 py-4" x-text="item.tanggal"></td>
+                            <td
+                                class="px-5 py-4 text-slate-600"
+                                x-text="item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : ''"
+                            ></td>
 
-                            <td class="px-5 py-4">
-                                <span
-                                    class="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold"
-                                    :class="{
-                                        'border-amber-300 bg-amber-50 text-amber-700': item.status === 'Menunggu Verifikasi',
-                                        'border-blue-300 bg-blue-50 text-blue-700': item.status === 'Diverifikasi Admin',
-                                        'border-purple-300 bg-purple-50 text-purple-700': item.status === 'Diteruskan ke Kaprodi',
-                                        'border-emerald-300 bg-emerald-50 text-emerald-700': item.status === 'Disetujui',
-                                        'border-red-300 bg-red-50 text-red-700': item.status === 'Ditolak'
-                                    }"
-                                >
-                                    <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
-                                    <span x-text="item.status"></span>
-                                </span>
+                            <td class="px-5 py-4 flex justify-center text-center">
+
+                                <template x-if="item.status == 'menunggu_verifikasi'">
+                                    <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+                                        Menunggu Verifikasi
+                                    </span>
+                                </template>
+
+                                <template x-if="item.status == 'diverifikasi_admin'">
+                                    <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+                                        Diverifikasi Admin
+                                    </span>
+                                </template>
+
+                                <template x-if="item.status == 'ditolak_admin'">
+                                    <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                                        Ditolak Admin
+                                    </span>
+                                </template>
+
                             </td>
 
                             <td class="px-5 py-4">
                                 <button
                                     type="button"
-                                    @click="openDetail(item)"
-                                    class="inline-flex items-center gap-1 font-semibold text-blue-600 hover:text-blue-700 cursor-pointer"
+                                    @click="openDetail({
+                                        id: item.id,
+                                        nama: item.mahasiswa.nama,
+                                        nim: item.mahasiswa.nim,
+                                        prodi: item.mahasiswa.prodi,
+                                        jenisSurat: item.jenis_surat.nama_surat,
+                                        status: item.status,
+                                        keperluan: item.keperluan,
+                                        tanggal: item.created_at,
+                                        file: '/storage/' + item.file_pengajuan,
+                                        catatan: item.catatan_admin
+                                    })"
+                                    class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
                                 >
-                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none">
-                                        <path
-                                            d="M2 12C2 12 5.5 5 12 5C18.5 5 22 12 22 12C22 12 18.5 19 12 19C5.5 19 2 12 2 12Z"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                        <path
-                                            d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                    </svg>
                                     Detail
                                 </button>
                             </td>
+
                         </tr>
                     </template>
 
                     <tr x-show="filteredItems.length === 0">
-                        <td colspan="6" class="px-5 py-10 text-center text-sm text-slate-400">
-                            Tidak ada data pengajuan yang sesuai dengan filter.
+                        <td colspan="6" class="px-5 py-10 text-center text-slate-400">
+                            Tidak ada data pengajuan yang sesuai.
                         </td>
                     </tr>
+
                 </tbody>
             </table>
         </div>
@@ -414,15 +333,19 @@
                     <span
                         class="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold"
                         :class="{
-                            'border-amber-300 bg-amber-50 text-amber-700': selectedItem?.status === 'Menunggu Verifikasi',
-                            'border-blue-300 bg-blue-50 text-blue-700': selectedItem?.status === 'Diverifikasi Admin',
-                            'border-purple-300 bg-purple-50 text-purple-700': selectedItem?.status === 'Diteruskan ke Kaprodi',
-                            'border-emerald-300 bg-emerald-50 text-emerald-700': selectedItem?.status === 'Disetujui',
-                            'border-red-300 bg-red-50 text-red-700': selectedItem?.status === 'Ditolak'
+                            'border-amber-300 bg-amber-50 text-amber-700': selectedItem?.status === 'menunggu_verifikasi',
+                            'border-blue-300 bg-blue-50 text-blue-700': selectedItem?.status === 'diverifikasi_admin',
+                            'border-purple-300 bg-red-50 text-red-700': selectedItem?.status === 'ditolak_admin',
                         }"
                     >
                         <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
-                        <span x-text="selectedItem?.status"></span>
+                        <span x-text="
+                            selectedItem?.status == 'menunggu_verifikasi'
+                                ? 'Menunggu Verifikasi'
+                                : selectedItem?.status == 'diverifikasi_admin'
+                                ? 'Diverifikasi Admin'
+                                : 'Ditolak Admin'
+                        "></span>
                     </span>
                 </div>
 
@@ -454,13 +377,37 @@
 
                         <div class="flex justify-between gap-4">
                             <span class="text-slate-500">Program Studi</span>
-                            <b class="text-right text-slate-700">Teknik Informatika</b>
+                            <b class="text-right text-slate-700" x-text="selectedItem?.prodi"></b>
                         </div>
                     </div>
                 </div>
 
                 {{-- Informasi Surat --}}
                 <div class="rounded-2xl bg-slate-50 p-4">
+                    {{-- Catatan Admin --}}
+                    <div
+                        x-show="selectedItem?.status == 'ditolak_admin'"
+                        class="rounded-2xl border border-red-200 bg-red-50 p-2 mb-2"
+                    >
+                        <h4 class="mb-3 flex items-center gap-2 font-semibold text-red-700">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none">
+                                <path
+                                    d="M12 8V12M12 16H12.01M10.29 3.86L1.82 18A2 2 0 0 0 3.55 21H20.45A2 2 0 0 0 22.18 18L13.71 3.86A2 2 0 0 0 10.29 3.86Z"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
+                            </svg>
+                            Alasan Penolakan
+                        </h4>
+
+                        <p
+                            class="pl-2 text-sm text-red-700 leading-relaxed"
+                            x-text="selectedItem?.catatan || 'Tidak ada catatan.'"
+                        ></p>
+                    </div>
+
                     <h4 class="mb-4 flex items-center gap-2 font-semibold text-slate-700">
                         <svg class="h-4 w-4 text-slate-500" viewBox="0 0 24 24" fill="none">
                             <path
@@ -484,83 +431,20 @@
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between gap-4">
                             <span class="text-slate-500">Jenis Surat</span>
-                            <b class="text-right text-slate-700" x-text="selectedItem?.jenis"></b>
+                            <b class="text-right text-slate-700" x-text="selectedItem?.jenisSurat"></b>
                         </div>
 
                         <div class="flex justify-between gap-4">
                             <span class="text-slate-500">Keperluan</span>
-                            <b class="max-w-sm text-right text-slate-700">
-                                <template x-if="selectedItem?.id === 'S7'">
-                                    <span>Mengikuti lomba programming tingkat nasional di Jakarta</span>
-                                </template>
-
-                                <template x-if="selectedItem?.id === 'S1'">
-                                    <span>Pengajuan beasiswa dari Yayasan Pendidikan Nusantara</span>
-                                </template>
-
-                                <template x-if="selectedItem?.id !== 'S7' && selectedItem?.id !== 'S1'">
-                                    <span>Keperluan administrasi akademik mahasiswa</span>
-                                </template>
-                            </b>
+                            <div
+                                class="max-w-sm text-right text-slate-700"
+                                x-text="selectedItem?.keperluan"
+                            ></div>
                         </div>
 
                         <div class="flex justify-between gap-4">
                             <span class="text-slate-500">Tanggal Pengajuan</span>
-                            <b class="text-right text-slate-700" x-text="selectedItem?.tanggal"></b>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Dokumen Seharusnya --}}
-                <div>
-                    <h4 class="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
-                        <svg class="h-4 w-4 text-slate-500" viewBox="0 0 24 24" fill="none">
-                            <path
-                                d="M4 6H20M7 12H17M10 18H14"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            />
-                        </svg>
-                        Dokumen Pendukung yang Seharusnya Dilampirkan
-                    </h4>
-
-                    <div class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs font-semibold">
-                        <div class="space-y-2">
-                            <template x-if="selectedItem?.id === 'S7'">
-                                <div class="space-y-2">
-                                    <p class="flex items-center gap-2 text-emerald-600">
-                                        <span class="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">✓</span>
-                                        KTM (Kartu Tanda Mahasiswa)
-                                    </p>
-                                    <p class="flex items-center gap-2 text-emerald-600">
-                                        <span class="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">✓</span>
-                                        Undangan/Surat Resmi Kegiatan
-                                    </p>
-                                    <p class="flex items-center gap-2 text-amber-600">
-                                        <span class="flex h-4 w-4 items-center justify-center rounded-full bg-amber-400 text-[10px] text-white">!</span>
-                                        Jadwal Kegiatan
-                                    </p>
-                                </div>
-                            </template>
-
-                            <template x-if="selectedItem?.id !== 'S7'">
-                                <div class="space-y-2">
-                                    <p class="flex items-center gap-2 text-emerald-600">
-                                        <span class="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">✓</span>
-                                        KTM (Kartu Tanda Mahasiswa)
-                                    </p>
-                                    <p class="flex items-center gap-2 text-emerald-600">
-                                        <span class="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">✓</span>
-                                        KRS Semester Terbaru
-                                    </p>
-                                    <p class="flex items-center gap-2 text-amber-600">
-                                        <span class="flex h-4 w-4 items-center justify-center rounded-full bg-amber-400 text-[10px] text-white">!</span>
-                                        Bukti Pembayaran UKT
-                                    </p>
-                                </div>
-                            </template>
+                            <b class="text-right text-slate-700" x-text="selectedItem?.tanggal ? new Date(selectedItem.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : ''"></b>
                         </div>
                     </div>
                 </div>
@@ -584,97 +468,111 @@
                                 stroke-linejoin="round"
                             />
                         </svg>
-                        Dokumen Pendukung yang Dilampirkan
+                        File Pengajuan
                     </h4>
 
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm">
-                            <div class="flex min-w-0 items-center gap-3">
-                                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+                    <div class="rounded-xl border border-slate-200 bg-white px-4 py-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="text-2xl">
                                     📄
                                 </div>
-                                <p class="truncate font-medium text-slate-700">KTM.pdf</p>
+
+                                <div>
+                                    <p class="font-medium text-slate-700">
+                                        Dokumen Pengajuan
+                                    </p>
+
+                                    <p class="text-xs text-slate-400">
+                                        File yang diunggah mahasiswa
+                                    </p>
+                                </div>
                             </div>
 
-                            <a href="#" class="ml-3 shrink-0 text-xs font-semibold text-blue-600 hover:text-blue-700">
-                                Lihat
+                            <a
+                                :href="selectedItem?.file"
+                                target="_blank"
+                                class="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700"
+                            >
+                                Lihat File
                             </a>
                         </div>
-
-                        <template x-if="selectedItem?.id === 'S7'">
-                            <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm">
-                                <div class="flex min-w-0 items-center gap-3">
-                                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
-                                        📄
-                                    </div>
-                                    <p class="truncate font-medium text-slate-700">Undangan_Lomba.pdf</p>
-                                </div>
-
-                                <a href="#" class="ml-3 shrink-0 text-xs font-semibold text-blue-600 hover:text-blue-700">
-                                    Lihat
-                                </a>
-                            </div>
-                        </template>
-
-                        <template x-if="selectedItem?.id !== 'S7'">
-                            <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm">
-                                <div class="flex min-w-0 items-center gap-3">
-                                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
-                                        📄
-                                    </div>
-                                    <p class="truncate font-medium text-slate-700">KRS_Semester_8.pdf</p>
-                                </div>
-
-                                <a href="#" class="ml-3 shrink-0 text-xs font-semibold text-blue-600 hover:text-blue-700">
-                                    Lihat
-                                </a>
-                            </div>
-                        </template>
                     </div>
                 </div>
 
-                {{-- Footer Button --}}
-                <div class="grid gap-3 border-t border-slate-100 pt-4 sm:grid-cols-3">
-                    <button
-                        type="button"
-                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
-                    >
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none">
-                            <path
-                                d="M20 6L9 17L4 12"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            />
-                        </svg>
-                        Verifikasi
-                    </button>
+                {{-- Footer --}}
+                <div class="space-y-4 border-t border-slate-100 pt-4">
 
-                    <button
-                        type="button"
-                        @click="openReject()"
-                        class="inline-flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-100"
-                    >
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none">
-                            <path
-                                d="M18 6L6 18M6 6L18 18"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            />
-                        </svg>
-                        Tolak
-                    </button>
+                    {{-- Catatan Penolakan --}}
+                    <div x-show="rejectOpen">
+                        <form
+                            :action="'/admin/pengajuan/' + selectedItem.id + '/tolak'"
+                            method="POST"
+                            class="space-y-3"
+                        >
+                            @csrf
+                            @method('PUT')
 
-                    <button
-                        type="button"
-                        @click="detailOpen = false"
-                        class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                            <textarea
+                                name="catatan_admin"
+                                required
+                                rows="3"
+                                placeholder="Masukkan alasan penolakan..."
+                                class="w-full rounded-xl border border-slate-200 p-3 text-sm focus:border-red-500 focus:ring-4 focus:ring-red-100"
+                            ></textarea>
+
+                            <div class="flex gap-3">
+                                <button
+                                    type="submit"
+                                    class="rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white hover:bg-red-700"
+                                >
+                                    Konfirmasi Tolak
+                                </button>
+
+                                <button
+                                    type="button"
+                                    @click="rejectOpen = false"
+                                    class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600"
+                                >
+                                    Batal
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    {{-- Tombol Aksi --}}
+                    <div
+                        x-show="!rejectOpen &&
+                                selectedItem?.status == 'menunggu_verifikasi'"
+                        class="grid gap-3 sm:grid-cols-2"
                     >
-                        Tutup
-                    </button>
+
+                        {{-- Verifikasi --}}
+                        <form
+                            :action="'/admin/pengajuan/' + selectedItem.id + '/verifikasi'"
+                            method="POST"
+                        >
+                            @csrf
+                            @method('PUT')
+
+                            <button
+                                type="submit"
+                                class="w-full rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
+                            >
+                                ✓ Verifikasi
+                            </button>
+                        </form>
+
+                        {{-- Tolak --}}
+                        <button
+                            type="button"
+                            @click="rejectOpen = true"
+                            class="w-full rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-100"
+                        >
+                            ✕ Tolak
+                        </button>                        
+                    </div>
+
                 </div>
             </div>
         </div>
