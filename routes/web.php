@@ -9,6 +9,7 @@ use App\Http\Controllers\Mahasiswa\PengajuanSuratController;
 use App\Http\Controllers\Admin\VerifikasiController;
 use App\Http\Controllers\Admin\DashboardAdminController;
 
+use App\Http\Controllers\Mahasiswa\PengumumanController as MahasiswaPengumumanController;
 // Landing Page
 Route::get('/', function () {
 
@@ -51,8 +52,16 @@ Route::prefix('mahasiswa')
             ->name('mahasiswa.dashboard');
 
         // Pengumuman
-        Route::view('/pengumuman', 'mahasiswa.pengumuman');
+        Route::get('/pengumuman', [MahasiswaPengumumanController::class, 'index'])
+            ->name('mahasiswa.pengumuman');
 
+        Route::get('/pengumuman/{pengumuman}/lihat',
+            [MahasiswaPengumumanController::class, 'lihat']
+        )->name('mahasiswa.pengumuman.lihat');
+
+        Route::get('/pengumuman/{pengumuman}/download',
+            [MahasiswaPengumumanController::class, 'download']
+        )->name('mahasiswa.pengumuman.download');
         // Ajukan Surat
         Route::get(
             '/ajukan',
