@@ -56,12 +56,20 @@ Route::prefix('mahasiswa')
             [PengajuanSuratController::class, 'status']
         )->name('pengajuan.status');
 
-        Route::view('/riwayat', 'mahasiswa.riwayat');
+        Route::get(
+        '/riwayat',
+        [PengajuanSuratController::class, 'riwayat']
+        )->name('pengajuan.riwayat');
 
         Route::get(
             '/template/{id}',
             [PengajuanSuratController::class, 'downloadTemplate']
         )->name('template.download');
+
+        Route::get(
+            '/status/{id}',
+            [PengajuanSuratController::class, 'status']
+        )->name('pengajuan.status');
 });
 
 // admin
