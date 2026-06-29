@@ -77,7 +77,7 @@
         detailOpen: false,
         selectedAnnouncement: null,
 
-        announcements: @js($announcements),
+        announcements: @js($pengumuman),
 
         openDetail(item) {
             this.selectedAnnouncement = item;
@@ -93,7 +93,7 @@
     {{-- Header Action --}}
     <div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <p class="text-sm text-slate-600">
-            <span class="font-semibold">{{ count($announcements) }}</span>
+            <span class="font-semibold">{{ $pengumuman->count() }}</span>
             total pengumuman
         </p>
 
@@ -144,9 +144,9 @@
                             ></span>
                         </div>
 
-                        <h3 class="font-semibold text-slate-800" x-text="item.title"></h3>
+                        <h3 class="font-semibold text-slate-800" x-text="item.judul"></h3>
 
-                        <p class="mt-1 text-sm text-slate-500" x-text="item.desc"></p>
+                        <p class="mt-1 text-sm text-slate-500" x-text="item.ringkasan"></p>
 
                         <p class="mt-3 flex items-center gap-1 text-sm text-slate-400">
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none">
@@ -159,9 +159,8 @@
                                 />
                             </svg>
 
-                            <span x-text="item.date"></span>
-                            <span>·</span>
-                            <span x-text="item.author"></span>
+                            <span x-text="item.tanggal"></span>
+
                         </p>
 
                         {{-- Dokumen Resmi --}}
@@ -173,26 +172,39 @@
                                     </div>
 
                                     <div class="min-w-0">
-                                        <p class="truncate text-sm font-semibold text-slate-700" x-text="item.file"></p>
+                                        <p class="truncate text-sm font-semibold text-slate-700" x-text="item.nama_file_asli"></p>
                                         <p class="text-xs text-slate-400" x-text="item.size"></p>
                                     </div>
                                 </div>
 
                                 <div class="flex shrink-0 items-center gap-4 text-xs font-semibold">
-                                    <a href="#" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700">
+                                    <a
+                                        :href="'/admin/pengumuman/' + item.id + '/lihat'"
+                                        target="_blank"
+                                        class="text-blue-600 hover:text-blue-700"
+                                    >
                                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none">
                                             <path
-                                                d="M2 12C2 12 5.5 5 12 5C18.5 5 22 12 22 12C22 12 18.5 19 12 19C5.5 19 2 12 2 12Z"
+                                                d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12Z"
                                                 stroke="currentColor"
                                                 stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
+                                            />
+                                            <circle
+                                                cx="12"
+                                                cy="12"
+                                                r="3"
+                                                stroke="currentColor"
+                                                stroke-width="2"
                                             />
                                         </svg>
+
                                         Lihat
                                     </a>
 
-                                    <a href="#" class="inline-flex items-center gap-1 text-slate-500 hover:text-slate-700">
+                                    <a
+                                        :href="'/admin/pengumuman/' + item.id + '/download'"
+                                        class="text-slate-500 hover:text-slate-700"
+                                    >
                                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none">
                                             <path
                                                 d="M12 3V15M12 15L7 10M12 15L17 10M5 21H19"
@@ -202,6 +214,7 @@
                                                 stroke-linejoin="round"
                                             />
                                         </svg>
+
                                         Unduh
                                     </a>
                                 </div>
@@ -236,20 +249,29 @@
                         </button>
 
                         {{-- Hapus --}}
-                        <button
-                            type="button"
-                            class="text-red-400 transition hover:text-red-600 cursor-pointer"
+                       <form
+                            :action="'{{ url('/admin/pengumuman') }}/' + item.id"
+                            method="POST"
+                            onsubmit="return confirm('Yakin ingin menghapus pengumuman ini?')"
                         >
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none">
-                                <path
-                                    d="M3 6H21M8 6V4H16V6M6 6L7 20H17L18 6M10 10V16M14 10V16"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                />
-                            </svg>
-                        </button>
+                            @csrf
+                            @method('DELETE')
+
+                            <button
+                                type="submit"
+                                class="text-red-400 transition hover:text-red-600 cursor-pointer"
+                            >
+                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none">
+                                    <path
+                                        d="M3 6H21M8 6V4H16V6M6 6L7 20H17L18 6M10 10V16M14 10V16"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </article>
@@ -332,23 +354,27 @@
                     <div class="space-y-3 text-sm">
                         <div>
                             <p class="mb-1 text-slate-500">Judul</p>
-                            <p class="font-semibold text-slate-800" x-text="selectedAnnouncement?.title"></p>
+                            <p class="font-semibold text-slate-800" x-text="selectedAnnouncement?.judul"></p>
                         </div>
 
                         <div>
                             <p class="mb-1 text-slate-500">Ringkasan</p>
-                            <p class="text-slate-700" x-text="selectedAnnouncement?.desc"></p>
+                            <p class="text-slate-700" x-text="selectedAnnouncement?.ringkasan"></p>
                         </div>
 
                         <div class="grid gap-3 sm:grid-cols-2">
                             <div>
                                 <p class="mb-1 text-slate-500">Tanggal Pengumuman</p>
-                                <p class="font-semibold text-slate-700" x-text="selectedAnnouncement?.date"></p>
+                                <p class="font-semibold text-slate-700" x-text="selectedAnnouncement?.tanggal"></p>
                             </div>
 
                             <div>
                                 <p class="mb-1 text-slate-500">Dibuat oleh</p>
-                                <p class="font-semibold text-slate-700" x-text="selectedAnnouncement?.author"></p>
+
+                                <p
+                                    class="font-semibold text-slate-700"
+                                    x-text="selectedAnnouncement?.creator?.admin_t_u?.nama"
+                                ></p>
                             </div>
                         </div>
                     </div>
@@ -360,7 +386,7 @@
                         Isi Pengumuman
                     </h4>
 
-                    <p class="text-sm leading-6 text-slate-600" x-text="selectedAnnouncement?.content"></p>
+                    <p class="text-sm leading-6 text-slate-600" x-text="selectedAnnouncement?.isi"></p>
                 </div>
 
                 {{-- Dokumen Resmi --}}
@@ -392,14 +418,26 @@
                             </div>
 
                             <div class="min-w-0">
-                                <p class="truncate font-semibold text-slate-700" x-text="selectedAnnouncement?.file"></p>
+                                <p class="truncate font-semibold text-slate-700" x-text="selectedAnnouncement?.nama_file_asli"></p>
                                 <p class="text-xs text-slate-400" x-text="selectedAnnouncement?.size"></p>
                             </div>
                         </div>
 
                         <div class="ml-3 flex shrink-0 items-center gap-4 text-xs font-semibold">
-                            <a href="#" class="text-blue-600 hover:text-blue-700">Lihat</a>
-                            <a href="#" class="text-slate-500 hover:text-slate-700">Unduh</a>
+                            <a
+                                :href="'/admin/pengumuman/' + selectedAnnouncement.id + '/lihat'"
+                                target="_blank"
+                                class="text-blue-600 hover:text-blue-700"
+                            >
+                                Lihat
+                            </a>
+
+                            <a
+                                :href="'/admin/pengumuman/' + selectedAnnouncement.id + '/download'"
+                                class="text-slate-500 hover:text-slate-700"
+                            >
+                                Unduh
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -448,13 +486,20 @@
                 </button>
             </div>
 
-            <form class="space-y-4 p-5">
+            <form
+            action="{{ route('admin.pengumuman.store') }}"
+            method="POST"
+            enctype="multipart/form-data"
+            class="space-y-4 p-5"
+        >
+            @csrf
                 <div>
                     <label class="mb-2 block text-sm font-semibold">
                         Judul Pengumuman <span class="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
+                        name="judul"
                         placeholder="Masukkan judul pengumuman..."
                         class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                     >
@@ -467,6 +512,7 @@
                         </label>
                         <input
                             type="text"
+                            name="kategori"
                             placeholder="Contoh: Akademik"
                             class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                         >
@@ -478,6 +524,7 @@
                         </label>
                         <input
                             type="date"
+                            name="tanggal"
                             class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                         >
                     </div>
@@ -489,6 +536,7 @@
                     </label>
                     <textarea
                         rows="3"
+                        name="ringkasan"
                         placeholder="Ringkasan singkat pengumuman..."
                         class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                     ></textarea>
@@ -500,6 +548,7 @@
                     </label>
                     <textarea
                         rows="5"
+                        name="isi"
                         placeholder="Isi lengkap pengumuman..."
                         class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                     ></textarea>
@@ -531,7 +580,12 @@
                             Format file: PDF — maks. 10 MB
                         </span>
 
-                        <input type="file" class="hidden" accept="application/pdf">
+                        <input
+                            type="file"
+                            name="file"
+                            class="hidden"
+                            accept="application/pdf"
+                        >
                     </label>
                 </div>
 
@@ -545,7 +599,7 @@
                     </button>
 
                     <button
-                        type="button"
+                        type="submit"
                         class="rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
                     >
                         Simpan & Publish

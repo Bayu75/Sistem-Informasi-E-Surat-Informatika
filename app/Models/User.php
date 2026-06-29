@@ -23,7 +23,7 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    
+
     protected $fillable = [
         'email',
         'password',
@@ -49,7 +49,7 @@ class User extends Authenticatable
 
     public function adminTU()
     {
-        return $this->hasOne(AdminTU::class);
+        return $this->hasOne(AdminTU::class, 'user_id');
     }
 
     public function kaprodi()
