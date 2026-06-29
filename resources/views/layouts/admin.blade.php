@@ -71,12 +71,6 @@
                         'badge' => 2,
                     ],
                     [
-                        'label' => 'Verifikasi Pengajuan',
-                        'url' => '/admin/verifikasi',
-                        'key' => 'verifikasi',
-                        'icon' => '☑',
-                    ],
-                    [
                         'label' => 'Pengumuman',
                         'url' => '/admin/pengumuman',
                         'key' => 'pengumuman',
