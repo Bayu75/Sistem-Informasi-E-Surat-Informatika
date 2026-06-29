@@ -5,69 +5,6 @@
 
 @php
     $activeMenu = 'pengumuman';
-
-    $announcements = [
-        [
-            'id' => 'P1',
-            'status' => 'Aktif',
-            'kategori' => 'Akademik',
-            'title' => 'Jadwal Ujian Akhir Semester (UAS) Genap 2024/2025',
-            'desc' => 'UAS semester genap akan dilaksanakan pada tanggal 9-20 Juni 2025. Mahasiswa wajib hadir tepat waktu.',
-            'content' => 'Diberitahukan kepada seluruh mahasiswa bahwa pelaksanaan Ujian Akhir Semester (UAS) Genap Tahun Akademik 2024/2025 akan dilaksanakan pada tanggal 9 sampai 20 Juni 2025. Mahasiswa wajib memperhatikan jadwal ujian, membawa kartu ujian, dan hadir tepat waktu sesuai ketentuan akademik.',
-            'date' => '20 Mei 2025',
-            'author' => 'Siti Rahma, S.Kom',
-            'file' => 'Jadwal_UAS_Genap_2025.pdf',
-            'size' => '342 KB',
-        ],
-        [
-            'id' => 'P2',
-            'status' => 'Aktif',
-            'kategori' => 'Beasiswa',
-            'title' => 'Pendaftaran Beasiswa Bidikmisi Tahap 2 Tahun 2025',
-            'desc' => 'Pendaftaran beasiswa Bidikmisi tahap 2 dibuka mulai 1 Juni 2025. Segera lengkapi berkas persyaratan.',
-            'content' => 'Pendaftaran Beasiswa Bidikmisi Tahap 2 Tahun 2025 telah dibuka untuk mahasiswa yang memenuhi kriteria. Mahasiswa diminta untuk melengkapi berkas persyaratan dan mengunggah dokumen pendukung sesuai jadwal yang telah ditentukan.',
-            'date' => '15 Mei 2025',
-            'author' => 'Siti Rahma, S.Kom',
-            'file' => 'Pengumuman_Beasiswa_Bidikmisi_2025.pdf',
-            'size' => '215 KB',
-        ],
-        [
-            'id' => 'P3',
-            'status' => 'Aktif',
-            'kategori' => 'Akademik',
-            'title' => 'Pengumuman Wisuda Periode Agustus 2025',
-            'desc' => 'Wisuda periode Agustus 2025 akan dilaksanakan pada 23 Agustus 2025. Pendaftaran dibuka mulai 1 Juli 2025.',
-            'content' => 'Diberitahukan kepada mahasiswa tingkat akhir bahwa pelaksanaan wisuda periode Agustus 2025 akan diselenggarakan pada tanggal 23 Agustus 2025. Pendaftaran wisuda dibuka mulai 1 Juli 2025 melalui bagian akademik.',
-            'date' => '10 Mei 2025',
-            'author' => 'Siti Rahma, S.Kom',
-            'file' => 'Pengumuman_Wisuda_Agustus_2025.pdf',
-            'size' => '298 KB',
-        ],
-        [
-            'id' => 'P4',
-            'status' => 'Aktif',
-            'kategori' => 'Akademik',
-            'title' => 'Pengisian KRS Online Semester Ganjil 2025/2026',
-            'desc' => 'Pengisian KRS semester ganjil 2025/2026 dimulai 15 Juni 2025. Konsultasikan dengan dosen wali terlebih dahulu.',
-            'content' => 'Pengisian Kartu Rencana Studi (KRS) Online untuk Semester Ganjil Tahun Akademik 2025/2026 akan dibuka mulai tanggal 15 Juni 2025. Mahasiswa wajib melakukan konsultasi dengan dosen wali sebelum melakukan pengisian KRS.',
-            'date' => '5 Mei 2025',
-            'author' => 'Siti Rahma, S.Kom',
-            'file' => 'Panduan_Pengisian_KRS_Ganjil_2025.pdf',
-            'size' => '187 KB',
-        ],
-        [
-            'id' => 'P5',
-            'status' => 'Nonaktif',
-            'kategori' => 'Kemahasiswaan',
-            'title' => 'Informasi Pelaksanaan PKL dan Magang Semester Genap',
-            'desc' => 'PKL dan magang semester genap dapat dilaksanakan mulai 1 Juli 2025. Segera ajukan surat pengantar.',
-            'content' => 'Mahasiswa yang akan melaksanakan PKL atau magang pada Semester Genap dapat mulai mengajukan surat pengantar melalui sistem SIERA. Pelaksanaan PKL dan magang dapat dimulai pada tanggal 1 Juli 2025 sesuai ketentuan program studi.',
-            'date' => '28 April 2025',
-            'author' => 'Siti Rahma, S.Kom',
-            'file' => 'Informasi_PKL_Magang_Semester_Genap.pdf',
-            'size' => '256 KB',
-        ],
-    ];
 @endphp
 
 @section('content')

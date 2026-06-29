@@ -12,11 +12,24 @@ class PengajuanSurat extends Model
         'mahasiswa_id',
         'jenis_surat_id',
         'keperluan',
+
+        'file_pengajuan',
+        'file_surat',
+
         'status',
+
         'catatan_admin',
         'catatan_kaprodi',
+
         'tanggal_pengajuan',
-        'file_pengajuan',
+        'tanggal_verifikasi_admin',
+        'tanggal_keputusan_kaprodi',
+    ];
+
+    protected $casts = [
+        'tanggal_pengajuan' => 'datetime',
+        'tanggal_verifikasi_admin' => 'datetime',
+        'tanggal_keputusan_kaprodi' => 'datetime',
     ];
 
     public function jenisSurat()

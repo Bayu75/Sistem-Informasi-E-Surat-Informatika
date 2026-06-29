@@ -12,6 +12,16 @@
 @section('content')
 <div
     x-data="{
+        statusText(status) {
+            return {
+                menunggu_verifikasi: 'Menunggu Verifikasi',
+                diverifikasi_admin: 'Diverifikasi Admin',
+                ditolak_admin: 'Ditolak Admin',
+                disetujui_kaprodi: 'Disetujui Kaprodi',
+                ditolak_kaprodi: 'Ditolak Kaprodi'
+            }[status] || status;
+        },
+
         detailOpen: false,
         selectedItem: null,
         search: '',
@@ -51,10 +61,11 @@
             class="h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-500 outline-none"
         >
             <option value="">Semua Status</option>
-            <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
-            <option value="Diproses Kaprodi">Diproses Kaprodi</option>
-            <option value="Disetujui">Disetujui</option>
-            <option value="Ditolak">Ditolak</option>
+            <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
+            <option value="diverifikasi_admin">Diverifikasi Admin</option>
+            <option value="ditolak_admin">Ditolak Admin</option>
+            <option value="disetujui_kaprodi">Disetujui Kaprodi</option>
+            <option value="ditolak_kaprodi">Ditolak Kaprodi</option>
         </select>
 
         <div class="relative">
@@ -96,13 +107,22 @@
                                 <span
                                     class="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold"
                                     :class="{
-                                        'border-amber-300 bg-amber-50 text-amber-700': item.status === 'Menunggu Verifikasi',
-                                        'border-emerald-300 bg-emerald-50 text-emerald-700': item.status === 'Disetujui',
-                                        'border-red-300 bg-red-50 text-red-700': item.status === 'Ditolak'
+                                        'border-amber-300 bg-amber-50 text-amber-700':
+                                            item.status === 'menunggu_verifikasi',
+
+                                        'border-blue-300 bg-blue-50 text-blue-700':
+                                            item.status === 'diverifikasi_admin',
+
+                                        'border-emerald-300 bg-emerald-50 text-emerald-700':
+                                            item.status === 'disetujui_kaprodi',
+
+                                        'border-red-300 bg-red-50 text-red-700':
+                                            item.status === 'ditolak_admin' ||
+                                            item.status === 'ditolak_kaprodi'
                                     }"
                                 >
                                     <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
-                                    <span x-text="item.status"></span>
+                                    <span x-text="statusText(item.status)"></span>
                                 </span>
                             </td>
 
@@ -170,15 +190,22 @@
                     <span
                         class="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold"
                         :class="{
-                            'border-amber-300 bg-amber-50 text-amber-700': selectedItem?.status === 'Menunggu Verifikasi',
-                            'border-blue-300 bg-blue-50 text-blue-700': selectedItem?.status === 'Diverifikasi Admin',
-                            'border-purple-300 bg-purple-50 text-purple-700': selectedItem?.status === 'Diteruskan ke Kaprodi',
-                            'border-emerald-300 bg-emerald-50 text-emerald-700': selectedItem?.status === 'Disetujui',
-                            'border-red-300 bg-red-50 text-red-700': selectedItem?.status === 'Ditolak'
+                            'border-amber-300 bg-amber-50 text-amber-700':
+                                selectedItem?.status === 'menunggu_verifikasi',
+
+                            'border-blue-300 bg-blue-50 text-blue-700':
+                                selectedItem?.status === 'diverifikasi_admin',
+
+                            'border-emerald-300 bg-emerald-50 text-emerald-700':
+                                selectedItem?.status === 'disetujui_kaprodi',
+
+                            'border-red-300 bg-red-50 text-red-700':
+                                selectedItem?.status === 'ditolak_admin' ||
+                                selectedItem?.status === 'ditolak_kaprodi'
                         }"
                     >
                         <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
-                        <span x-text="selectedItem?.status"></span>
+                        <span x-text="statusText(selectedItem?.status)"></span>
                     </span>
                 </div>
 
@@ -294,7 +321,10 @@
                 </div>
 
                 {{-- Dokumen Surat TTD Kaprodi --}}
-                <template x-if="selectedItem?.status === 'Disetujui' && selectedItem?.file_ttd">
+                <template x-if="
+                    selectedItem?.status === 'disetujui_kaprodi'
+                    && selectedItem?.file_ttd
+                ">
                     <div>
                         <h4 class="mb-3 text-sm font-semibold text-slate-500">
                             Dokumen Surat yang Telah Ditandatangani Kaprodi
@@ -340,7 +370,8 @@
 
                                 <div class="flex shrink-0 items-center gap-2">
                                     <a
-                                        href="#"
+                                        :href="'/storage/fileTTD/' + selectedItem?.file_ttd"
+                                        target="_blank"
                                         class="inline-flex items-center justify-center gap-1 rounded-lg border border-emerald-200 bg-white px-3 py-2 text-xs font-semibold text-emerald-600 transition hover:bg-emerald-50"
                                     >
                                         <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none">
@@ -363,7 +394,7 @@
                                     </a>
 
                                     <a
-                                        href="#"
+                                        :href="'/storage/fileTTD/' + selectedItem?.file_ttd"
                                         download
                                         class="inline-flex items-center justify-center gap-1 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700"
                                     >
@@ -385,7 +416,12 @@
                 </template>                            
 
                 {{-- Alasan Penolakan --}}
-                <template x-if="selectedItem?.catatan && selectedItem?.catatan !== '—'"
+                <template x-if="
+                    (selectedItem?.status === 'ditolak_admin' ||
+                    selectedItem?.status === 'ditolak_kaprodi')
+                    &&
+                    selectedItem?.catatan
+                ">
                     <div class="rounded-2xl border border-red-200 bg-red-50 p-4">
                         <div class="mb-2 flex items-center gap-2 text-sm font-semibold text-red-600">
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none">
