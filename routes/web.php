@@ -2,16 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengumumanController;
 use Illuminate\Support\Facades\Auth;
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Mahasiswa\PengajuanSuratController;
 use App\Http\Controllers\Admin\VerifikasiController;
-    
+
 use App\Http\Controllers\Mahasiswa\DashboardController;
 
+use App\Http\Controllers\Mahasiswa\PengumumanController as MahasiswaPengumumanController;
 // Landing Page
 Route::get('/', function () {
 
@@ -54,8 +53,16 @@ Route::prefix('mahasiswa')
             ->name('mahasiswa.dashboard');
 
         // Pengumuman
-        Route::view('/pengumuman', 'mahasiswa.pengumuman');
+        Route::get('/pengumuman', [MahasiswaPengumumanController::class, 'index'])
+            ->name('mahasiswa.pengumuman');
 
+        Route::get('/pengumuman/{pengumuman}/lihat',
+            [MahasiswaPengumumanController::class, 'lihat']
+        )->name('mahasiswa.pengumuman.lihat');
+
+        Route::get('/pengumuman/{pengumuman}/download',
+            [MahasiswaPengumumanController::class, 'download']
+        )->name('mahasiswa.pengumuman.download');
         // Ajukan Surat
         Route::get(
             '/ajukan',
@@ -111,7 +118,6 @@ Route::prefix('admin')
         Route::get('/pengumuman/{pengumuman}/download', [PengumumanController::class, 'download'])
             ->name('admin.pengumuman.download');
 
-        Route::view('/pengumuman', 'admin.pengumuman');
 
         Route::view('/arsip', 'admin.arsip');
 

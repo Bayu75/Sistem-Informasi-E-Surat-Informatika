@@ -6,58 +6,18 @@
 @php
     $activeMenu = 'pengumuman';
 
-    $announcements = [
-        [
-            'id' => 'P1',
-            'kategori' => 'Akademik',
-            'title' => 'Jadwal Ujian Akhir Semester (UAS) Genap 2024/2025',
-            'desc' => 'UAS semester genap akan dilaksanakan pada tanggal 9-20 Juni 2025. Mahasiswa wajib hadir tepat waktu.',
-            'content' => 'Kepada seluruh mahasiswa Teknik Informatika, diberitahukan bahwa Ujian Akhir Semester (UAS) Genap 2024/2025 akan dilaksanakan pada: Tanggal: 9 - 20 Juni 2025. Waktu: Sesuai jadwal masing-masing mata kuliah. Tempat: Gedung A, B, dan C Fakultas Teknik. Ketentuan: Mahasiswa wajib hadir 15 menit sebelum ujian dimulai. Membawa KTM yang masih berlaku. Tidak diperkenankan menggunakan perangkat elektronik kecuali kalkulator untuk mata kuliah yang mengizinkan. Berpakaian rapi dan sopan. Jadwal lengkap dapat diunduh di portal akademik.',
-            'date' => '20 Mei 2025',
-            'file' => 'Jadwal_UAS_Genap_2025.pdf',
-            'size' => '342 KB',
-        ],
-        [
-            'id' => 'P2',
-            'kategori' => 'Beasiswa',
-            'title' => 'Pendaftaran Beasiswa Bidikmisi Tahap 2 Tahun 2025',
-            'desc' => 'Pendaftaran beasiswa Bidikmisi tahap 2 dibuka mulai 1 Juni 2025. Segera lengkapi berkas persyaratan.',
-            'content' => 'Pendaftaran Beasiswa Bidikmisi Tahap 2 Tahun 2025 dibuka untuk mahasiswa yang memenuhi persyaratan. Mahasiswa diharapkan membaca panduan resmi dan menyiapkan dokumen pendukung sebelum batas waktu pendaftaran.',
-            'date' => '15 Mei 2025',
-            'file' => 'Pengumuman_Beasiswa_Bidikmisi_2025.pdf',
-            'size' => '215 KB',
-        ],
-        [
-            'id' => 'P3',
-            'kategori' => 'Akademik',
-            'title' => 'Pengumuman Wisuda Periode Agustus 2025',
-            'desc' => 'Wisuda periode Agustus 2025 akan dilaksanakan pada 23 Agustus 2025. Pendaftaran dibuka mulai 1 Juli 2025.',
-            'content' => 'Wisuda periode Agustus 2025 akan dilaksanakan pada 23 Agustus 2025. Mahasiswa yang telah memenuhi persyaratan yudisium dapat melakukan pendaftaran mulai 1 Juli 2025.',
-            'date' => '10 Mei 2025',
-            'file' => 'Pengumuman_Wisuda_Agustus_2025.pdf',
-            'size' => '298 KB',
-        ],
-        [
-            'id' => 'P4',
-            'kategori' => 'Akademik',
-            'title' => 'Pengisian KRS Online Semester Ganjil 2025/2026',
-            'desc' => 'Pengisian KRS semester ganjil 2025/2026 dimulai 15 Juni 2025. Konsultasikan dengan dosen wali terlebih dahulu.',
-            'content' => 'Pengisian KRS semester ganjil 2025/2026 dimulai pada 15 Juni 2025. Mahasiswa wajib berkonsultasi dengan dosen wali sebelum melakukan pengisian KRS online.',
-            'date' => '5 Mei 2025',
-            'file' => 'Panduan_Pengisian_KRS_Ganjil_2025.pdf',
-            'size' => '187 KB',
-        ],
-        [
-            'id' => 'P5',
-            'kategori' => 'Kemahasiswaan',
-            'title' => 'Informasi Pelaksanaan PKL dan Magang Semester Genap',
-            'desc' => 'PKL dan magang semester genap dapat dilaksanakan mulai 1 Juli 2025. Segera ajukan surat pengantar.',
-            'content' => 'PKL dan magang semester genap dapat dilaksanakan mulai 1 Juli 2025. Mahasiswa diharapkan segera mengajukan surat pengantar melalui portal SIERA.',
-            'date' => '28 Apr',
-            'file' => 'Informasi_PKL_Magang_Semester_Genap.pdf',
-            'size' => '256 KB',
-        ],
-    ];
+    $announcements = $pengumuman->map(function ($item) {
+        return [
+            'id' => $item->id,
+            'kategori' => $item->kategori,
+            'title' => $item->judul,
+            'desc' => $item->ringkasan,
+            'content' => $item->isi,
+            'date' => \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y'),
+            'file' => $item->nama_file_asli,
+            'size' => '',
+        ];
+    });
 @endphp
 
 @section('content')
@@ -185,8 +145,10 @@
 
                 <h3 class="text-2xl font-semibold text-slate-800" x-text="selected?.title"></h3>
 
-                <p class="mt-5 min-h-[300px] text-sm leading-7 text-slate-600" x-text="selected?.content"></p>
-
+                    <p
+                        class="mt-5 whitespace-pre-line text-sm leading-7 text-slate-600"
+                        x-text="selected?.content">
+                    </p>
                 <div class="mt-8 border-t border-slate-100 pt-5">
                     <h4 class="mb-4 font-semibold text-slate-700">Surat Resmi Terlampir</h4>
 
@@ -203,10 +165,18 @@
                         </div>
 
                         <div class="ml-3 flex shrink-0 gap-3">
-                            <a href="#" class="rounded-xl border border-cyan-200 bg-white px-4 py-2 text-sm font-semibold text-cyan-600">
+                            <a
+                                :href="`/mahasiswa/pengumuman/${selected.id}/lihat`"
+                                target="_blank"
+                                class="rounded-xl border border-cyan-200 bg-white px-4 py-2 text-sm font-semibold text-cyan-600"
+                            >
                                 Lihat
                             </a>
-                            <a href="#" class="rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white">
+
+                            <a
+                                :href="`/mahasiswa/pengumuman/${selected.id}/download`"
+                                class="rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white"
+                            >
                                 Unduh
                             </a>
                         </div>
