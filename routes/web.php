@@ -68,20 +68,22 @@ Route::prefix('mahasiswa')
             [PengajuanSuratController::class, 'status']
         )->name('pengajuan.status');
 
-        // Riwayat
-        Route::view('/riwayat', 'mahasiswa.riwayat');
+        Route::get(
+        '/riwayat',
+        [PengajuanSuratController::class, 'riwayat']
+        )->name('pengajuan.riwayat');
 
         // Download Template
         Route::get(
             '/template/{id}',
             [PengajuanSuratController::class, 'downloadTemplate']
         )->name('template.download');
-    });
 
-
-// ==============================
-// ADMIN
-// ==============================
+        Route::get(
+            '/status/{id}',
+            [PengajuanSuratController::class, 'status']
+        )->name('pengajuan.status');
+});
 
 Route::prefix('admin')
     ->middleware(['auth', 'role:admin'])

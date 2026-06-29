@@ -6,47 +6,7 @@
 @php
     $activeMenu = 'riwayat';
 
-    $items = [
-        [
-            'id' => 'R1',
-            'jenis' => 'Surat Keterangan Aktif Kuliah',
-            'keperluan' => 'Pengajuan beasiswa dari Yayasan Pendidikan Nusantara',
-            'tanggal' => '20 Mei 2025',
-            'tanggal_keputusan' => null,
-            'status' => 'Menunggu Verifikasi',
-            'catatan' => '—',
-            'alasan_penolakan' => null,
-            'file_surat' => 'Surat_Permohonan_Beasiswa_Budi.pdf',
-            'dokumen' => ['KTM.pdf', 'KRS_Semester_8.pdf'],
-            'file_ttd' => null,
-        ],
-        [
-            'id' => 'R2',
-            'jenis' => 'Surat Dispensasi',
-            'keperluan' => 'Mengikuti workshop web development di luar kampus',
-            'tanggal' => '10 Mei 2025',
-            'tanggal_keputusan' => '12 Mei 2025',
-            'status' => 'Ditolak',
-            'catatan' => 'Dokumen undangan tidak menunjukkan instansi resmi',
-            'alasan_penolakan' => 'Dokumen undangan tidak menunjukkan instansi penyelenggara yang jelas. Harap lampirkan surat resmi dari penyelenggara yang mencantumkan kop surat dan stempel.',
-            'file_surat' => 'Surat_Dispensasi_Budi.pdf',
-            'dokumen' => ['KTM.pdf', 'Undangan_Workshop.pdf'],
-            'file_ttd' => null,
-        ],
-        [
-            'id' => 'R3',
-            'jenis' => 'Surat Pengantar PKL/Magang',
-            'keperluan' => 'Magang di PT Teknologi Nusantara selama 3 bulan',
-            'tanggal' => '18 Mei 2025',
-            'tanggal_keputusan' => '22 Mei 2025',
-            'status' => 'Disetujui',
-            'catatan' => 'Disetujui oleh Kaprodi',
-            'alasan_penolakan' => null,
-            'file_surat' => 'Surat_PKL_Dewi_Rahayu.pdf',
-            'dokumen' => ['KTM.pdf', 'Proposal_PKL.pdf', 'Surat_Perusahaan.pdf'],
-            'file_ttd' => 'Surat_PKL_Dewi_Rahayu_TTD_Kaprodi.pdf',
-        ],
-    ];
+    
 @endphp
 
 @section('content')
@@ -57,7 +17,7 @@
         search: '',
         status: '',
 
-        items: @js($items),
+        items: @js($pengajuanData),
 
         get filteredItems() {
             const keyword = this.search.toLowerCase();
@@ -92,6 +52,7 @@
         >
             <option value="">Semua Status</option>
             <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
+            <option value="Diproses Kaprodi">Diproses Kaprodi</option>
             <option value="Disetujui">Disetujui</option>
             <option value="Ditolak">Ditolak</option>
         </select>
@@ -260,17 +221,17 @@
                         <div class="grid gap-4 text-sm sm:grid-cols-2">
                             <div>
                                 <p class="text-slate-400">Nama</p>
-                                <p class="font-semibold text-slate-700">Budi Santoso</p>
+                                <p class="font-semibold text-slate-700">{{ $mahasiswa->nama }}</p>
                             </div>
 
                             <div>
                                 <p class="text-slate-400">NIM</p>
-                                <p class="font-semibold text-slate-700">2021001</p>
+                                <p class="font-semibold text-slate-700">{{ $mahasiswa->nim }}</p>
                             </div>
 
                             <div>
                                 <p class="text-slate-400">Program Studi</p>
-                                <p class="font-semibold text-slate-700">Teknik Informatika</p>
+                                <p class="font-semibold text-slate-700">{{ $mahasiswa->prodi }}</p>
                             </div>
                         </div>
                     </div>
@@ -303,11 +264,12 @@
                                 </svg>
                             </div>
 
-                            <p class="truncate font-semibold text-slate-700" x-text="selectedItem?.file_surat"></p>
+                            <p class="truncate font-semibold text-slate-700" x-text="selectedItem?.file_pengajuan"></p>
                         </div>
 
                         <a
-                            href="#"
+                            :href="'/storage/' + selectedItem?.file_pengajuan"
+                            target="_blank"
                             class="ml-3 inline-flex shrink-0 items-center gap-1 rounded-lg border border-cyan-200 bg-white px-3 py-1.5 text-xs font-semibold text-cyan-600 hover:bg-cyan-50"
                         >
                             <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none">
@@ -420,65 +382,10 @@
                             </div>
                         </div>
                     </div>
-                </template>
-
-                {{-- Dokumen Pendukung --}}
-                <div>
-                    <h4 class="mb-3 text-sm font-semibold text-slate-500">
-                        Dokumen Pendukung
-                    </h4>
-
-                    <div class="space-y-2">
-                        <template x-for="dokumen in selectedItem?.dokumen" :key="dokumen">
-                            <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3">
-                                <div class="flex min-w-0 items-center gap-3">
-                                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
-                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none">
-                                            <path
-                                                d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                            />
-                                            <path
-                                                d="M14 2V8H20"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                            />
-                                        </svg>
-                                    </div>
-
-                                    <p class="truncate font-medium text-slate-700" x-text="dokumen"></p>
-                                </div>
-
-                                <a href="#" class="ml-3 shrink-0 text-slate-400 hover:text-cyan-600">
-                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none">
-                                        <path
-                                            d="M2 12C2 12 5.5 5 12 5C18.5 5 22 12 22 12C22 12 18.5 19 12 19C5.5 19 2 12 2 12Z"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                        <path
-                                            d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                    </svg>
-                                </a>
-                            </div>
-                        </template>
-                    </div>
-                </div>
+                </template>                            
 
                 {{-- Alasan Penolakan --}}
-                <template x-if="selectedItem?.status === 'Ditolak'">
+                <template x-if="selectedItem?.catatan && selectedItem?.catatan !== '—'"
                     <div class="rounded-2xl border border-red-200 bg-red-50 p-4">
                         <div class="mb-2 flex items-center gap-2 text-sm font-semibold text-red-600">
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none">
@@ -496,7 +403,7 @@
 
                         <p
                             class="text-sm leading-6 text-red-600"
-                            x-text="selectedItem?.alasan_penolakan"
+                            x-text="selectedItem?.catatan"
                         ></p>
                     </div>
                 </template>
