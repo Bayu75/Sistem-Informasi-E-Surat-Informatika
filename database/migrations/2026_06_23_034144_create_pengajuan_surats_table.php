@@ -28,9 +28,10 @@ return new class extends Migration
 
             $table->enum('status', [
                 'menunggu_verifikasi',
-                'diteruskan_ke_kaprodi',
-                'disetujui',
-                'ditolak'
+                'diverifikasi_admin',
+                'ditolak_admin',
+                'disetujui_kaprodi',
+                'ditolak_kaprodi'
             ])->default('menunggu_verifikasi');
 
             $table->text('catatan_admin')->nullable();

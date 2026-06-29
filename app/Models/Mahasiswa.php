@@ -21,4 +21,9 @@ class Mahasiswa extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function pengajuanSurat()
+    {
+        return $this->hasMany(PengajuanSurat::class);
+    }
 }
