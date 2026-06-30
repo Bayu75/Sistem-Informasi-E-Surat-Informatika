@@ -6,27 +6,6 @@
 @php
     $activeMenu = 'persetujuan';
 
-    $items = [
-        [
-            'id' => 'S3',
-            'nama' => 'Rizky Pratama',
-            'nim' => '2020015',
-            'prodi' => 'Teknik Informatika',
-            'jenis' => 'Surat Permohonan Beasiswa',
-            'keperluan' => 'Beasiswa prestasi akademik semester ganjil 2024/2025',
-            'tanggal' => '15 Mei 2025',
-            'status' => 'Diteruskan ke Kaprodi',
-            'catatan_admin' => 'Semua dokumen telah diverifikasi. Diteruskan ke Kaprodi.',
-            'file_surat' => 'Surat_Permohonan_Beasiswa_Rizky.pdf',
-            'dokumen' => ['KTM.pdf', 'Transkrip_Nilai.pdf', 'Sertifikat_Prestasi.pdf'],
-            'syarat' => [
-                ['nama' => 'KTM (Kartu Tanda Mahasiswa)', 'status' => 'lengkap'],
-                ['nama' => 'Transkrip Nilai Terbaru', 'status' => 'lengkap'],
-                ['nama' => 'Sertifikat Prestasi (jika ada)', 'status' => 'lengkap'],
-                ['nama' => 'Surat Keterangan Tidak Mampu (jika diperlukan)', 'status' => 'kurang'],
-            ],
-        ],
-    ];
 @endphp
 
 @section('content')
@@ -37,7 +16,24 @@
         approveOpen: false,
         rejectOpen: false,
         selectedItem: null,
-        items: @js($items),
+       items: @js(
+                    $items->map(function ($item) {
+                        return [
+                            'id' => $item->id,
+                            'nama' => $item->mahasiswa->nama,
+                            'nim' => $item->mahasiswa->nim,
+                            'prodi' => $item->mahasiswa->prodi,
+                            'jenis' => $item->jenisSurat->nama_surat,
+                            'keperluan' => $item->keperluan,
+                            'tanggal' => optional($item->tanggal_pengajuan)->format('d M Y'),
+                            'status' => $item->status,
+                            'catatan_admin' => $item->catatan_admin,
+                            'file_surat' => $item->file_pengajuan,
+                            'dokumen' => [],
+                            'syarat' => [],
+                        ];
+                    })
+                ),
 
         get filteredItems() {
             const keyword = this.search.toLowerCase();
@@ -70,19 +66,37 @@
         }
     }"
 >
+        @if ($items->count() > 0)
     <section class="mb-5 rounded-2xl border border-violet-300 bg-violet-50 px-5 py-4">
         <div class="flex items-start gap-3">
             <div class="text-violet-600">▣</div>
             <div>
                 <h3 class="font-semibold text-violet-700">
-                    1 pengajuan diteruskan oleh Admin TU — menunggu keputusan Anda
+                    {{ $items->count() }} pengajuan diteruskan oleh Admin TU — menunggu keputusan Anda
                 </h3>
+
                 <p class="text-sm text-violet-600">
                     Pengajuan ini telah diverifikasi kelengkapan dokumennya. Silakan tinjau detail dan ambil keputusan.
                 </p>
             </div>
         </div>
     </section>
+    @else
+    <section class="mb-5 rounded-2xl border border-green-300 bg-green-50 px-5 py-4">
+        <div class="flex items-start gap-3">
+            <div class="text-green-600">✓</div>
+            <div>
+                <h3 class="font-semibold text-green-700">
+                    Tidak ada pengajuan yang menunggu keputusan.
+                </h3>
+
+                <p class="text-sm text-green-600">
+                    Semua pengajuan telah diproses.
+                </p>
+            </div>
+        </div>
+    </section>
+    @endif
 
     <div class="mb-5">
         <div class="relative">
@@ -97,6 +111,11 @@
     </div>
 
     <section class="space-y-4">
+        <template x-if="filteredItems.length === 0">
+            <div class="rounded-2xl border border-slate-200 bg-white p-10 text-center text-slate-500">
+                Tidak ada pengajuan yang menunggu keputusan.
+            </div>
+        </template>
         <template x-for="item in filteredItems" :key="item.id">
             <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div class="mb-4 flex items-start justify-between gap-4">
@@ -266,50 +285,116 @@
         </div>
     </div>
 
-    {{-- Approve Modal --}}
+{{-- Approve Modal --}}
+<div
+    x-show="approveOpen"
+    x-transition.opacity
+    class="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/50 px-4"
+    style="display: none;"
+>
     <div
-        x-show="approveOpen"
-        x-transition.opacity
-        class="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/50 px-4"
-        style="display: none;"
+        @click.outside="closeAll()"
+        class="w-full max-w-lg rounded-2xl bg-white shadow-2xl"
     >
-        <div @click.outside="closeAll()" class="w-full max-w-lg rounded-2xl bg-white shadow-2xl">
-            <div class="flex items-center justify-between border-b border-slate-100 p-5">
-                <div class="flex items-center gap-3">
-                    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">✓</span>
-                    <h3 class="text-xl font-semibold text-slate-800">Setujui Pengajuan</h3>
-                </div>
-                <button @click="closeAll()" class="text-2xl text-slate-400">&times;</button>
+        <div class="flex items-center justify-between border-b border-slate-100 p-5">
+            <div class="flex items-center gap-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                    ✓
+                </span>
+
+                <h3 class="text-xl font-semibold text-slate-800">
+                    Setujui Pengajuan
+                </h3>
             </div>
 
+            <button
+                @click="closeAll()"
+                class="text-2xl text-slate-400"
+            >
+                &times;
+            </button>
+        </div>
+
+        <form
+            :action="`/kaprodi/persetujuan-pengajuan/${selectedItem.id}/setujui`"
+            method="POST"
+            enctype="multipart/form-data"
+        >
+            @csrf
+            @method('PUT')
+
             <div class="space-y-4 p-5">
+
                 <div class="rounded-xl bg-slate-50 p-4 text-sm">
                     <p class="text-slate-400">Mahasiswa</p>
+
                     <p class="font-semibold text-slate-700">
-                        <span x-text="selectedItem?.nama"></span> — <span x-text="selectedItem?.jenis"></span>
+                        <span x-text="selectedItem?.nama"></span>
+                        —
+                        <span x-text="selectedItem?.jenis"></span>
                     </p>
                 </div>
 
                 <div>
-                    <label class="mb-2 block text-sm font-semibold text-slate-600">Catatan Persetujuan <span class="text-slate-400">(opsional)</span></label>
-                    <textarea rows="4" placeholder="Tambahkan catatan persetujuan..." class="w-full rounded-xl border border-slate-200 p-4 text-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"></textarea>
+                    <label class="mb-2 block text-sm font-semibold text-slate-600">
+                        Catatan Persetujuan
+                        <span class="text-slate-400">(opsional)</span>
+                    </label>
+
+                    <textarea
+                        name="catatan_kaprodi"
+                        rows="4"
+                        placeholder="Tambahkan catatan persetujuan..."
+                        class="w-full rounded-xl border border-slate-200 p-4 text-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+                    ></textarea>
                 </div>
 
                 <div>
-                    <label class="mb-2 block text-sm font-semibold text-slate-600">Tanggal Kadaluwarsa Surat <span class="text-slate-400">(opsional)</span></label>
-                    <input type="date" class="h-11 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100">
-                    <p class="mt-2 text-xs text-slate-400">ⓘ Jika tidak diisi, surat tidak memiliki tanggal kadaluwarsa.</p>
+                    <label class="mb-2 block text-sm font-semibold text-slate-600">
+                        Upload Surat Bertanda Tangan
+                        <span class="text-red-500">*</span>
+                    </label>
+
+                    <input
+                        type="file"
+                        name="file_surat"
+                        accept=".pdf"
+                        required
+                        class="w-full rounded-xl border border-slate-200 p-3 text-sm"
+                    >
+
+                    <p class="mt-2 text-xs text-slate-500">
+                        Upload file PDF yang sudah ditandatangani Kaprodi.
+                    </p>
                 </div>
 
                 <div class="grid gap-3 pt-2 sm:grid-cols-2">
-                    <button @click="closeAll()" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600">Batal</button>
-                    <button class="rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white">✓ Konfirmasi Setujui</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    {{-- Reject Modal --}}
+                    <button
+                        type="button"
+                        @click="closeAll()"
+                        class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600"
+                    >
+                        Batal
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white"
+                    >
+                        ✓ Konfirmasi Setujui
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+  
     <div
         x-show="rejectOpen"
         x-transition.opacity
@@ -333,15 +418,39 @@
                     </p>
                 </div>
 
-                <div>
-                    <label class="mb-2 block text-sm font-semibold text-slate-600">Alasan Penolakan <span class="text-red-500">(wajib)</span></label>
-                    <textarea rows="4" placeholder="Jelaskan alasan penolakan..." class="w-full rounded-xl border border-red-200 p-4 text-sm outline-none focus:border-red-400 focus:ring-4 focus:ring-red-100"></textarea>
-                </div>
+                <form :action="`/kaprodi/persetujuan-pengajuan/${selectedItem.id}/tolak`" method="POST">
+                    @csrf
+                    @method('PUT')
 
-                <div class="grid gap-3 pt-2 sm:grid-cols-2">
-                    <button @click="closeAll()" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600">Batal</button>
-                    <button class="rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white">⊗ Konfirmasi Tolak</button>
-                </div>
+                    <div>
+                        <label class="mb-2 block text-sm font-semibold text-slate-600">
+                            Alasan Penolakan
+                            <span class="text-red-500">(wajib)</span>
+                        </label>
+
+                        <textarea
+                            name="catatan_kaprodi"
+                            rows="4"
+                            placeholder="Jelaskan alasan penolakan..."
+                            required
+                            class="w-full rounded-xl border border-red-200 p-4 text-sm outline-none focus:border-red-400 focus:ring-4 focus:ring-red-100"></textarea>
+                    </div>
+
+                    <div class="grid gap-3 pt-2 sm:grid-cols-2">
+                        <button
+                            type="button"
+                            @click="closeAll()"
+                            class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600">
+                            Batal
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="w-full rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white">
+                            ⊗ Konfirmasi Tolak
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

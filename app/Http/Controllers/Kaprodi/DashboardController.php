@@ -10,42 +10,27 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Statistik
-        $menunggu = PengajuanSurat::where(
-            'status',
-            'diteruskan_ke_kaprodi'
-        )->count();
+        $menunggu = PengajuanSurat::where('status', 'diverifikasi_admin')->count();
 
-        $disetujui = PengajuanSurat::where(
-            'status',
-            'disetujui'
-        )->count();
+        $disetujui = PengajuanSurat::where('status', 'disetujui_kaprodi')->count();
 
-        $ditolak = PengajuanSurat::where(
-            'status',
-            'ditolak'
-        )->count();
+        $ditolak = PengajuanSurat::where('status', 'ditolak_kaprodi')->count();
 
-        // Pengajuan yang menunggu keputusan
-        $pengajuanMenunggu = PengajuanSurat::with([
-            'mahasiswa',
-            'jenisSurat'
-        ])
-        ->where('status', 'diteruskan_ke_kaprodi')
-        ->latest('tanggal_pengajuan')
-        ->take(5)
-        ->get();
+        $pengajuan = PengajuanSurat::with(['mahasiswa', 'jenisSurat'])
+            ->where('status', 'diverifikasi_admin')
+            ->latest('tanggal_verifikasi_admin')
+            ->get();
 
         $pengumuman = Pengumuman::where('status', 'Aktif')
-        ->orderByDesc('tanggal')
-        ->take(5)
-        ->get();
+            ->orderBy('tanggal', 'desc')
+            ->take(2)
+            ->get();
 
         return view('kaprodi.dashboard', compact(
             'menunggu',
             'disetujui',
             'ditolak',
-            'pengajuanMenunggu',
+            'pengajuan',
             'pengumuman'
         ));
     }

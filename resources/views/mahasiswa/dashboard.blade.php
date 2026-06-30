@@ -82,9 +82,22 @@
 
             @elseif($pengajuan->status == 'disetujui_kaprodi')
 
-                <span class="rounded-full border border-green-300 bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
-                    ● Disetujui Kaprodi
-                </span>
+                <div class="flex items-center gap-3">
+
+                    <span class="rounded-full border border-green-300 bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+                        ● Disetujui Kaprodi
+                    </span>
+
+                    @if($pengajuan->file_ttd)
+                        <a
+                            href="{{ route('mahasiswa.pengajuan.download', $pengajuan->id) }}"
+                            class="rounded-lg bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700"
+                        >
+                            📥 Download Surat
+                        </a>
+                    @endif
+
+                </div>
 
             @elseif($pengajuan->status == 'ditolak_admin')
 

@@ -14,8 +14,7 @@ class PengajuanSurat extends Model
         'keperluan',
 
         'file_pengajuan',
-        'file_surat',
-
+        'file_ttd',
         'status',
 
         'catatan_admin',
