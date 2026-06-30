@@ -36,6 +36,16 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $view->with('jumlahNotifikasi', $jumlahNotifikasi);
+
         });
+
+        View::composer('layouts.admin', function ($view) {
+
+                $jumlahPengajuanBaru = PengajuanSurat::where('status', 'menunggu_verifikasi')
+                    ->count();
+
+                $view->with('jumlahPengajuanBaru', $jumlahPengajuanBaru);
+            });
+        
     }
 }

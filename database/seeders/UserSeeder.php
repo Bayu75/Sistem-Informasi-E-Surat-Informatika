@@ -12,10 +12,22 @@ class UserSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+     public function run(): void
     {
         User::create([
-            'email' => 'mahasiswa@unud.ac.id',
+            'email' => 'mahasiswa1@unud.ac.id',
+            'password' => bcrypt('mahasiswa123'),
+            'role' => 'mahasiswa',
+        ]);
+
+        User::create([
+            'email' => 'mahasiswa2@unud.ac.id',
+            'password' => bcrypt('mahasiswa123'),
+            'role' => 'mahasiswa',
+        ]);
+
+        User::create([
+            'email' => 'mahasiswa3@unud.ac.id',
             'password' => bcrypt('mahasiswa123'),
             'role' => 'mahasiswa',
         ]);

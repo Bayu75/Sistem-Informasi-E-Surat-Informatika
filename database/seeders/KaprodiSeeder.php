@@ -14,7 +14,7 @@ class KaprodiSeeder extends Seeder
     public function run(): void
     {
         Kaprodi::create([
-            'user_id' => 3,
+            'user_id' => 5,
             'nama' => 'Dr. Made Surya',
             'nip' => '19750001',
             'prodi' => 'Informatika',

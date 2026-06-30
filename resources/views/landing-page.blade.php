@@ -160,7 +160,7 @@
                 <div class="grid grid-cols-2 md:grid-cols-3">
 
                     <div class="py-6 border-r border-white/10">
-                        <div class="text-3xl font-bold">8+</div>
+                        <div class="text-3xl font-bold">7</div>
                         <div class="text-sm text-blue-100 mt-1">
                             Jenis Surat
                         </div>
@@ -241,119 +241,71 @@
         {{-- Grid --}}
         <div class="grid md:grid-cols-3 gap-4 mt-14">
 
-            {{-- Card 1 --}}
-            <div class="bg-white border border-slate-200 rounded-2xl p-5">
+            @forelse($pengumuman as $item)
 
-                <div class="flex gap-2">
+                <div class="bg-white border border-slate-200 rounded-2xl p-5">
 
-                    <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-600 text-xs">
-                        Akademik
-                    </span>
+                    <div class="flex gap-2">
 
-                    <span class="px-3 py-1 rounded-full bg-green-100 text-green-600 text-xs">
-                        Aktif
-                    </span>
+                        <span
+                            class="px-3 py-1 rounded-full text-xs
+                            @switch($item->kategori)
+                                @case('Akademik')
+                                    bg-blue-100 text-blue-600
+                                    @break
 
-                </div>
+                                @case('Beasiswa')
+                                    bg-purple-100 text-purple-600
+                                    @break
 
-                <h3 class="mt-4 text-base font-semibold text-slate-900 leading-snug">
-                    Jadwal Ujian Akhir Semester (UAS) Genap 2024/2025
-                </h3>
+                                @case('Kemahasiswaan')
+                                    bg-green-100 text-green-600
+                                    @break
 
-                <p class="mt-3 text-sm text-slate-500 leading-relaxed">
-                    UAS semester genap akan dilaksanakan pada tanggal 9–20 Juni 2025.
-                    Mahasiswa wajib hadir tepat waktu.
-                </p>
+                                @default
+                                    bg-slate-100 text-slate-600
+                            @endswitch">
 
-                <div class="mt-4 border-t border-slate-100 pt-4 flex justify-between items-center">
+                            {{ $item->kategori }}
 
-                    <span class="text-xs text-slate-400">
-                        📅 20 Mei 2025
-                    </span>
+                        </span>
 
-                    <a href="/login"
-                       class="text-blue-600 text-sm font-medium">
-                        Baca Selengkapnya →
-                    </a>
+                        <span class="px-3 py-1 rounded-full bg-green-100 text-green-600 text-xs">
+                            {{ $item->status }}
+                        </span>
 
-                </div>
+                    </div>
 
-            </div>
+                    <h3 class="mt-4 text-base font-semibold text-slate-900 leading-snug">
+                        {{ $item->judul }}
+                    </h3>
 
-            {{-- Card 2 --}}
-            <div class="bg-white border border-slate-200 rounded-2xl p-5">
+                    <p class="mt-3 text-sm text-slate-500 leading-relaxed">
+                        {{ $item->ringkasan }}
+                    </p>
 
-                <div class="flex gap-2">
+                    <div class="mt-4 border-t border-slate-100 pt-4 flex justify-between items-center">
 
-                    <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-600 text-xs">
-                        Beasiswa
-                    </span>
+                        <span class="text-xs text-slate-400">
+                            📅 {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d F Y') }}
+                        </span>
 
-                    <span class="px-3 py-1 rounded-full bg-green-100 text-green-600 text-xs">
-                        Aktif
-                    </span>
+                        <a href="{{ route('login') }}"
+                        class="text-blue-600 text-sm font-medium">
+                            Baca Selengkapnya →
+                        </a>
 
-                </div>
-
-                <h3 class="mt-4 text-base font-semibold">
-                    Pendaftaran Beasiswa Bidikmisi Tahap 2 Tahun 2025
-                </h3>
-
-                <p class="mt-3 text-sm text-slate-500">
-                    Pendaftaran beasiswa dibuka mulai 1 Juni 2025.
-                    Segera lengkapi berkas persyaratan.
-                </p>
-
-                <div class="mt-4 border-t border-slate-100 pt-4 flex justify-between items-center">
-
-                    <span class="text-xs text-slate-400">
-                        📅 15 Mei 2025
-                    </span>
-
-                    <a href="/login" class="text-blue-600 text-sm font-medium">
-                        Baca Selengkapnya →
-                    </a>
+                    </div>
 
                 </div>
 
-            </div>
+            @empty
 
-            {{-- Card 3 --}}
-            <div class="bg-white border border-slate-200 rounded-2xl p-5">
-
-                <div class="flex gap-2">
-
-                    <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-600 text-xs">
-                        Akademik
-                    </span>
-
-                    <span class="px-3 py-1 rounded-full bg-green-100 text-green-600 text-xs">
-                        Aktif
-                    </span>
-
+                <div class="col-span-3 text-center py-8 text-slate-500">
+                    Belum ada pengumuman.
                 </div>
 
-                <h3 class="mt-4 text-base font-semibold">
-                    Pengumuman Wisuda Periode Agustus 2025
-                </h3>
-
-                <p class="mt-3 text-sm text-slate-500">
-                    Wisuda periode Agustus 2025 akan dilaksanakan pada 23 Agustus 2025.
-                </p>
-
-                <div class="mt-4 border-t border-slate-100 pt-4 flex justify-between items-center">
-
-                    <span class="text-xs text-slate-400">
-                        📅 10 Mei 2025
-                    </span>
-
-                    <a href="/login" class="text-blue-600 text-sm font-medium">
-                        Baca Selengkapnya →
-                    </a>
-
-                </div>
-
-            </div>
+            @endforelse
 
         </div>
 

@@ -68,7 +68,7 @@
                         'url' => '/admin/pengajuan-masuk',
                         'key' => 'pengajuan-masuk',
                         'icon' => '▣',
-                        'badge' => 2,
+                        'badge' => $jumlahPengajuanBaru,
                     ],
                     [
                         'label' => 'Pengumuman',
@@ -103,11 +103,11 @@
                         {{ $menu['label'] }}
                     </span>
 
-                    @isset($menu['badge'])
+                    @if(isset($menu['badge']) && $menu['badge'] > 0)
                         <span class="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-xs text-white">
                             {{ $menu['badge'] }}
                         </span>
-                    @endisset
+                    @endif
                 </a>
             @endforeach
         </nav>
@@ -168,7 +168,11 @@
 
             <div class="hidden items-center gap-2 rounded-xl bg-slate-100 px-4 py-2 text-sm text-slate-600 sm:flex">
                 <span>♧</span>
-                <span>2 pengajuan baru</span>
+                @if($jumlahPengajuanBaru > 0)
+                    <span>{{ $jumlahPengajuanBaru }} pengajuan baru</span>
+                @else
+                    <span>Tidak ada pengajuan baru</span>
+                @endif
             </div>
         </header>
 

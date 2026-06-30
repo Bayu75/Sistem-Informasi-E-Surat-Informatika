@@ -9,7 +9,6 @@ class Pengumuman extends Model
     protected $table = 'pengumuman';
 
     protected $fillable = [
-
         'judul',
         'kategori',
         'ringkasan',

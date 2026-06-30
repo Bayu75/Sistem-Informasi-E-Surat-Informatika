@@ -39,7 +39,7 @@
 
 
 @php
-    $active = $active ?? '';
+    $active = $activeMenu ?? '';
 @endphp
         @php
         $menus = [
@@ -82,11 +82,11 @@
                         {{ $menu['label'] }}
                     </span>
 
-                    @isset($menu['badge'])
+                    @if(isset($menu['badge']) && $menu['badge'] > 0)
                         <span class="flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1.5 text-xs text-white">
                             {{ $menu['badge'] }}
                         </span>
-                    @endisset
+                    @endif
                 </a>
             @endforeach
         </nav>
@@ -137,16 +137,18 @@
                 </div>
             </div>
 
-            <a
-                href="/mahasiswa/ajukan"
-                class="hidden items-center gap-2 rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-cyan-700 sm:flex"
-            >
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none">
-                    <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                    <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                </svg>
-                Ajukan Surat
-            </a>
+            @if(($activeMenu ?? '') !== 'ajukan')
+                <a
+                    href="/mahasiswa/ajukan"
+                    class="hidden items-center gap-2 rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-cyan-700 sm:flex"
+                >
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none">
+                        <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                        <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                    Ajukan Surat
+                </a>
+            @endif
         </header>
 
         <main class="min-h-[calc(100vh-5rem)] p-4 lg:p-8">
