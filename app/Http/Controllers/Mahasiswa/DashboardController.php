@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Controller;
 use App\Models\PengajuanSurat;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Pengumuman;
 
 class DashboardController extends Controller
 {
@@ -57,12 +58,18 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        $pengumumanTerbaru = Pengumuman::where('status', 'Aktif')
+            ->orderBy('tanggal', 'desc')
+            ->take(5)
+            ->get();
+
         return view('mahasiswa.dashboard', compact(
             'totalPengajuan',
             'sedangDiproses',
             'disetujui',
             'ditolak',
-            'pengajuanAktif'
+            'pengajuanAktif',
+            'pengumumanTerbaru'
         ));
     }
 }

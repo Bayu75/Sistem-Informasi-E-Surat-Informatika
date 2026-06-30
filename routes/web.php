@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Mahasiswa\PengajuanSuratController;
 use App\Http\Controllers\Admin\VerifikasiController;
 use App\Http\Controllers\Admin\DashboardAdminController;
-
 use App\Http\Controllers\Mahasiswa\PengumumanController as MahasiswaPengumumanController;
+use App\Models\Pengumuman;
+
 // Landing Page
 Route::get('/', function () {
-
+    
     if (Auth::check()) {
 
         return match (Auth::user()->role) {
@@ -22,7 +23,11 @@ Route::get('/', function () {
         };
     }
 
-    return view('landing-page');
+    $pengumuman = Pengumuman::where('status', 'Aktif')
+        ->orderByDesc('tanggal')
+        ->get();
+
+    return view('landing-page', compact('pengumuman'));
 });
 
 // Login
@@ -37,11 +42,6 @@ Route::middleware('guest')->group(function () {
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
-
-
-// ==============================
-// MAHASISWA
-// ==============================
 
 Route::prefix('mahasiswa')
     ->middleware(['auth', 'role:mahasiswa'])
