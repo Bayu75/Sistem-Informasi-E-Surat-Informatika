@@ -14,17 +14,17 @@ class RoleMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!Auth::check()) {
-            return redirect('/login');
-        }
+    if (!Auth::check()) {
+        return redirect('/login');
+    }
 
-        if (Auth::user()->role !== $role) {
-            return redirect()->back()
-                ->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
-        }
+    if (!in_array(Auth::user()->role, $roles)) {
+        return redirect()->back()
+            ->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
+    }
 
-        return $next($request);
+    return $next($request);
     }
 }

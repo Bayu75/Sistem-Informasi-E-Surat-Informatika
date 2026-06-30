@@ -89,5 +89,13 @@ public function download(Pengumuman $pengumuman)
         $pengumuman->nama_file_asli
     );
 }
+    public function kaprodi()
+    {
+        $pengumuman = Pengumuman::where('status', 'Aktif')
+            ->latest()
+            ->get();
+
+        return view('kaprodi.pengumuman', compact('pengumuman'));
+    }
 
 }

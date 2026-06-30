@@ -1,16 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PengumumanController;
 use Illuminate\Support\Facades\Auth;
-
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\Mahasiswa\PengajuanSuratController;
 use App\Http\Controllers\Admin\VerifikasiController;
-    
-use App\Http\Controllers\Mahasiswa\DashboardController;
+use App\Http\Controllers\Mahasiswa\DashboardController; 
 
 // Landing Page
 Route::get('/', function () {
@@ -111,8 +107,6 @@ Route::prefix('admin')
         Route::get('/pengumuman/{pengumuman}/download', [PengumumanController::class, 'download'])
             ->name('admin.pengumuman.download');
 
-        Route::view('/pengumuman', 'admin.pengumuman');
-
         Route::view('/arsip', 'admin.arsip');
 
         Route::get(
@@ -132,7 +126,7 @@ Route::prefix('admin')
 });
 
 Route::prefix('kaprodi')
-    ->middleware(['auth', 'role:kaprodi'])
+    ->middleware(['auth', 'role:kaprodi,admin'])
     ->group(function () {
 
         Route::view('/dashboard', 'kaprodi.dashboard');
@@ -141,5 +135,21 @@ Route::prefix('kaprodi')
 
         Route::view('/riwayat', 'kaprodi.riwayat');
 
-        Route::view('/pengumuman', 'kaprodi.pengumuman');
+        Route::get('/pengumuman', [PengumumanController::class, 'kaprodi'])
+        ->name('kaprodi.pengumuman');
+
+        Route::get('/pengumuman/{pengumuman}/lihat', [PengumumanController::class, 'lihat'])
+        ->name('kaprodi.pengumuman.lihat');
+
+        Route::get('/pengumuman/{pengumuman}/download', [PengumumanController::class, 'download'])
+        ->name('kaprodi.pengumuman.download');
+      
+        Route::get('/debug-auth', function () {
+        return [
+        'check' => auth()->check(),
+        'user' => auth()->user(),
+        'session_id' => session()->getId(),
+            ];
+        });
+
     });
