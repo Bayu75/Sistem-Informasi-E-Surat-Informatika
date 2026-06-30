@@ -5,12 +5,6 @@
 
 @php
     $activeMenu = 'dashboard';
-
-    $announcements = [
-        ['title' => 'Jadwal Ujian Akhir Semester (UAS) Genap 2024/2025', 'desc' => 'UAS semester genap akan dilaksanakan pada tanggal 9-20 Juni 2025. Mahasiswa wajib hadir tepat waktu.', 'kategori' => 'Akademik'],
-        ['title' => 'Pendaftaran Beasiswa Bidikmisi Tahap 2 Tahun 2025', 'desc' => 'Pendaftaran beasiswa Bidikmisi tahap 2 dibuka mulai 1 Juni 2025. Segera lengkapi berkas persyaratan.', 'kategori' => 'Beasiswa'],
-        ['title' => 'Pengumuman Wisuda Periode Agustus 2025', 'desc' => 'Wisuda periode Agustus 2025 akan dilaksanakan pada 23 Agustus 2025. Pendaftaran dibuka mulai 1 Juli 2025.', 'kategori' => 'Akademik'],
-    ];
 @endphp
 
 @section('content')
@@ -125,24 +119,51 @@
         </div>
 
         <div class="divide-y divide-slate-100">
-            @foreach ($announcements as $item)
-                <div class="flex items-center justify-between gap-4 px-5 py-4">
-                    <div class="flex min-w-0 items-center gap-3">
-                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                            📣
+            <div class="divide-y divide-slate-100">
+
+                @forelse($pengumumanTerbaru as $item)
+
+                    <div class="flex items-center justify-between gap-4 px-5 py-4">
+
+                        <div class="flex min-w-0 items-center gap-3">
+
+                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                                📣
+                            </div>
+
+                            <div class="min-w-0">
+
+                                <p class="truncate font-semibold text-slate-700">
+                                    {{ $item->judul }}
+                                </p>
+
+                                <p class="truncate text-sm text-slate-500">
+                                    {{ $item->ringkasan }}
+                                </p>
+
+                            </div>
+
                         </div>
 
-                        <div class="min-w-0">
-                            <p class="truncate font-semibold text-slate-700">{{ $item['title'] }}</p>
-                            <p class="truncate text-sm text-slate-500">{{ $item['desc'] }}</p>
+                        <div class="flex items-center gap-2">
+
+                            <p class="truncate text-sm text-slate-500">
+                                {{ $item->kategori }}
+                            </p>
+
                         </div>
+
                     </div>
 
-                    <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-600">
-                        {{ $item['kategori'] }}
-                    </span>
-                </div>
-            @endforeach
+                @empty
+
+                    <div class="px-5 py-8 text-center text-slate-500">
+                        Belum ada pengumuman.
+                    </div>
+
+                @endforelse
+
+            </div>
         </div>
     </section>
 @endsection

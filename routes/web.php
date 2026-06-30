@@ -11,12 +11,15 @@ use App\Http\Controllers\Mahasiswa\PengajuanSuratController;
 use App\Http\Controllers\Mahasiswa\PengumumanController as MahasiswaPengumumanController;
 
 use App\Http\Controllers\Admin\DashboardAdminController;
+use App\Models\Pengumuman;
+
+// Landing Page
 use App\Http\Controllers\Admin\VerifikasiController;
 
 use App\Http\Controllers\Kaprodi\DashboardController as KaprodiDashboardController;
 
 Route::get('/', function () {
-
+    
     if (Auth::check()) {
 
         return match (Auth::user()->role) {
@@ -26,7 +29,11 @@ Route::get('/', function () {
         };
     }
 
-    return view('landing-page');
+    $pengumuman = Pengumuman::where('status', 'Aktif')
+        ->orderByDesc('tanggal')
+        ->get();
+
+    return view('landing-page', compact('pengumuman'));
 });
 
 Route::middleware('guest')->group(function () {

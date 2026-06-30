@@ -14,7 +14,7 @@ class AdminTUSeeder extends Seeder
     public function run(): void
     {
         AdminTU::create([
-            'user_id' => 2,
+            'user_id' => 4,
             'nama' => 'Siti Rahma',
             'nip' => '19870001',
             'jabatan' => 'Admin Tata Usaha',

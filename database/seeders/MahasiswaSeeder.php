@@ -20,5 +20,21 @@ class MahasiswaSeeder extends Seeder
             'angkatan' => '2024',
             'prodi' => 'Informatika',
         ]);
+
+        Mahasiswa::create([
+            'user_id' => 2,
+            'nama' => 'I Made Aditya Pratama',
+            'nim' => '2408561060',
+            'angkatan' => '2024',
+            'prodi' => 'Informatika',
+        ]);
+
+        Mahasiswa::create([
+            'user_id' => 3,
+            'nama' => 'Ni Luh Putu Ayu Maytta Wulandhani',
+            'nim' => '2408561061',
+            'angkatan' => '2024',
+            'prodi' => 'Informatika',
+        ]);
     }
 }
