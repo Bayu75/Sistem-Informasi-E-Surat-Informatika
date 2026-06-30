@@ -8,6 +8,7 @@ use App\Models\JenisSurat;
 use App\Models\PengajuanSurat;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class PengajuanSuratController extends Controller
 {
@@ -37,7 +38,7 @@ class PengajuanSuratController extends Controller
 
         if (!$surat) {
             return back()->with(
-                'error', 
+                'error',
                 'Jenis surat tidak tersedia.'
             );
         }
@@ -152,5 +153,20 @@ class PengajuanSuratController extends Controller
             'mahasiswa.riwayat',
             compact('pengajuanData', 'mahasiswa')
         );
+    }
+
+    public function downloadSurat(PengajuanSurat $pengajuan)
+    {
+        // Pastikan hanya pemilik pengajuan yang bisa mengunduh
+        if ($pengajuan->mahasiswa_id !== auth()->user()->mahasiswa->id) {
+            abort(403);
+        }
+
+        // Pastikan file sudah ada
+        if (!$pengajuan->file_ttd || !Storage::disk('public')->exists($pengajuan->file_ttd)) {
+            return back()->with('error', 'File surat belum tersedia.');
+        }
+
+        return Storage::disk('public')->download($pengajuan->file_ttd);
     }
 }

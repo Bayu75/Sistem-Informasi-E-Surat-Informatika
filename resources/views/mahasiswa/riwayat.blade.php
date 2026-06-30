@@ -6,7 +6,7 @@
 @php
     $activeMenu = 'riwayat';
 
-    
+
 @endphp
 
 @section('content')
@@ -370,7 +370,7 @@
 
                                 <div class="flex shrink-0 items-center gap-2">
                                     <a
-                                        :href="'/storage/fileTTD/' + selectedItem?.file_ttd"
+                                        :href="'/storage/' + selectedItem?.file_ttd"
                                         target="_blank"
                                         class="inline-flex items-center justify-center gap-1 rounded-lg border border-emerald-200 bg-white px-3 py-2 text-xs font-semibold text-emerald-600 transition hover:bg-emerald-50"
                                     >
@@ -394,8 +394,7 @@
                                     </a>
 
                                     <a
-                                        :href="'/storage/fileTTD/' + selectedItem?.file_ttd"
-                                        download
+                                        :href="'/storage/' + selectedItem?.file_ttd"                                        download
                                         class="inline-flex items-center justify-center gap-1 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700"
                                     >
                                         <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none">
@@ -413,7 +412,7 @@
                             </div>
                         </div>
                     </div>
-                </template>                            
+                </template>
 
                 {{-- Alasan Penolakan --}}
                 <template x-if="

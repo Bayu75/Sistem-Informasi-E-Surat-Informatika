@@ -6,56 +6,6 @@
 @php
     $activeMenu = 'riwayat';
 
-    $items = [
-        [
-            'id' => 'S1B',
-            'nama' => 'Budi Santoso',
-            'nim' => '2021001',
-            'jenis' => 'Surat Dispensasi',
-            'tanggal' => '10 Mei 2025',
-            'status' => 'Ditolak',
-            'kadaluwarsa' => null,
-            'keperluan' => 'Mengikuti workshop web development di luar kampus',
-            'file_surat' => 'Surat_Dispensasi_Budi.pdf',
-            'dokumen' => ['KTM.pdf', 'Undangan_Workshop.pdf'],
-        ],
-        [
-            'id' => 'S4',
-            'nama' => 'Anisa Putri',
-            'nim' => '2020020',
-            'jenis' => 'Surat Keterangan Aktif Kuliah',
-            'tanggal' => '10 Mei 2025',
-            'status' => 'Disetujui',
-            'kadaluwarsa' => 'Aktif',
-            'keperluan' => 'Pengajuan pinjaman KPR Bank Mandiri atas nama orang tua',
-            'file_surat' => 'Surat_Keterangan_Aktif_Anisa.pdf',
-            'dokumen' => ['KTM.pdf', 'KRS_Semester_10.pdf'],
-        ],
-        [
-            'id' => 'S5',
-            'nama' => 'Fauzan Malik',
-            'nim' => '2021030',
-            'jenis' => 'Surat Rekomendasi',
-            'tanggal' => '8 Mei 2025',
-            'status' => 'Ditolak',
-            'kadaluwarsa' => null,
-            'keperluan' => 'Rekomendasi kegiatan luar kampus',
-            'file_surat' => 'Surat_Rekomendasi_Fauzan.pdf',
-            'dokumen' => ['KTM.pdf', 'Proposal_Kegiatan.pdf'],
-        ],
-        [
-            'id' => 'S6',
-            'nama' => 'Sari Wulandari',
-            'nim' => '2019005',
-            'jenis' => 'Surat Keterangan Lulus',
-            'tanggal' => '25 Apr 2025',
-            'status' => 'Disetujui',
-            'kadaluwarsa' => 'Kadaluwarsa',
-            'keperluan' => 'Keperluan administrasi pekerjaan',
-            'file_surat' => 'Surat_Keterangan_Lulus_Sari.pdf',
-            'dokumen' => ['KTM.pdf', 'Transkrip_Nilai.pdf'],
-        ],
-    ];
 @endphp
 
 @section('content')
@@ -64,7 +14,23 @@
         search: '',
         detailOpen: false,
         selectedItem: null,
-        items: @js($items),
+        items: @js(
+            $items->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'nama' => $item->mahasiswa->nama,
+                    'nim' => $item->mahasiswa->nim,
+                    'prodi' => $item->mahasiswa->prodi,
+                    'jenis' => $item->jenisSurat->nama_surat,
+                    'keperluan' => $item->keperluan,
+                    'tanggal' => optional($item->tanggal_keputusan_kaprodi)->format('d M Y'),
+                    'status' => $item->status,
+                    'catatan_admin' => $item->catatan_admin,
+                    'catatan_kaprodi' => $item->catatan_kaprodi,
+                    'file_surat' => $item->file_pengajuan,
+                ];
+            })
+        ),
 
         get filteredItems() {
             const keyword = this.search.toLowerCase();
@@ -88,13 +54,15 @@
 >
     <section class="mb-5 grid gap-4 md:grid-cols-2">
         <div class="rounded-2xl border border-emerald-300 bg-emerald-50 p-5">
-            <p class="text-sm text-emerald-700">Disetujui</p>
-            <p class="mt-2 text-3xl font-semibold text-emerald-700">2</p>
+            <p class="mt-2 text-3xl font-semibold text-emerald-600">
+                {{ $disetujui }}
+            </p>
         </div>
 
         <div class="rounded-2xl border border-red-300 bg-red-50 p-5">
-            <p class="text-sm text-red-700">Ditolak</p>
-            <p class="mt-2 text-3xl font-semibold text-red-700">2</p>
+            <p class="mt-2 text-3xl font-semibold text-red-600">
+                {{ $ditolak }}
+            </p>
         </div>
     </section>
 
@@ -145,7 +113,11 @@
                                             'border-red-300 bg-red-50 text-red-700': item.status === 'Ditolak'
                                         }"
                                     >
-                                        ● <span x-text="item.status"></span>
+                                        ●<span
+                                            x-text="item.status === 'disetujui_kaprodi'
+                                            ? 'Disetujui'
+                                            : 'Ditolak'">
+                                        </span>
                                     </span>
 
                                     <template x-if="item.kadaluwarsa">
@@ -193,8 +165,8 @@
                     <span
                         class="rounded-full border px-3 py-1 text-xs font-semibold"
                         :class="{
-                            'border-emerald-300 bg-emerald-50 text-emerald-700': selectedItem?.status === 'Disetujui',
-                            'border-red-300 bg-red-50 text-red-700': selectedItem?.status === 'Ditolak'
+                            'border-emerald-300 bg-emerald-50 text-emerald-700': item.status === 'disetujui_kaprodi',
+                            'border-red-300 bg-red-50 text-red-700': item.status === 'ditolak_kaprodi'
                         }"
                     >
                         ● <span x-text="selectedItem?.status"></span>

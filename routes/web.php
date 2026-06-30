@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Mahasiswa\PengajuanSuratController;
 use App\Http\Controllers\Admin\VerifikasiController;
 use App\Http\Controllers\Admin\DashboardAdminController;
-
+use App\Http\Controllers\Kaprodi\PersetujuanController;
 use App\Http\Controllers\Mahasiswa\PengumumanController as MahasiswaPengumumanController;
+use App\Http\Controllers\Kaprodi\DashboardController as KaprodiDashboardController;
 // Landing Page
 Route::get('/', function () {
 
@@ -94,6 +95,11 @@ Route::prefix('mahasiswa')
             '/status/{id}',
             [PengajuanSuratController::class, 'status']
         )->name('pengajuan.status');
+
+        Route::get(
+            '/pengajuan/{pengajuan}/download',
+            [PengajuanSuratController::class, 'downloadSurat']
+        )->name('mahasiswa.pengajuan.download');
 });
 
 Route::prefix('admin')
@@ -140,13 +146,15 @@ Route::prefix('kaprodi')
     ->middleware(['auth', 'role:kaprodi,admin'])
     ->group(function () {
 
-        Route::view('/dashboard', 'kaprodi.dashboard');
+        Route::get('/dashboard', [KaprodiDashboardController::class, 'index'])
+            ->name('kaprodi.dashboard');
+        Route::get('/persetujuan-pengajuan', [PersetujuanController::class, 'index'])
+            ->name('kaprodi.persetujuan');
 
-        Route::view('/persetujuan-pengajuan', 'kaprodi.persetujuan-pengajuan');
+         Route::get('/riwayat', [PersetujuanController::class, 'riwayat'])
+            ->name('kaprodi.riwayat');
 
-        Route::view('/riwayat', 'kaprodi.riwayat');
-
-        Route::get('/pengumuman', [PengumumanController::class, 'kaprodi'])
+            Route::get('/pengumuman', [PengumumanController::class, 'kaprodi'])
         ->name('kaprodi.pengumuman');
 
         Route::get('/pengumuman/{pengumuman}/lihat', [PengumumanController::class, 'lihat'])
@@ -154,7 +162,17 @@ Route::prefix('kaprodi')
 
         Route::get('/pengumuman/{pengumuman}/download', [PengumumanController::class, 'download'])
         ->name('kaprodi.pengumuman.download');
-      
+
+        Route::put(
+            '/persetujuan-pengajuan/{pengajuan}/setujui',
+            [PersetujuanController::class, 'setujui']
+        )->name('kaprodi.persetujuan.setujui');
+
+        Route::put(
+            '/persetujuan-pengajuan/{pengajuan}/tolak',
+            [PersetujuanController::class, 'tolak']
+        )->name('kaprodi.persetujuan.tolak');
+
         Route::get('/debug-auth', function () {
         return [
         'check' => auth()->check(),

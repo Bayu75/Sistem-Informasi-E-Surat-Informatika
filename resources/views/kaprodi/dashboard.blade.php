@@ -15,10 +15,6 @@
         'status' => 'Diteruskan ke Kaprodi',
     ];
 
-    $pengumuman = [
-        ['title' => 'Jadwal Ujian Akhir Semester (UAS) Genap 2024/2025', 'desc' => 'UAS semester genap akan dilaksanakan pada tanggal 9-20 Juni 2025. Mahasiswa wajib hadir tepat waktu.', 'kategori' => 'Akademik'],
-        ['title' => 'Pendaftaran Beasiswa Bidikmisi Tahap 2 Tahun 2025', 'desc' => 'Pendaftaran beasiswa Bidikmisi tahap 2 dibuka mulai 1 Juni 2025. Segera lengkapi berkas persyaratan.', 'kategori' => 'Beasiswa'],
-    ];
 @endphp
 
 @section('content')
@@ -36,7 +32,7 @@
             <div class="flex justify-between">
                 <div>
                     <p class="text-sm text-slate-500">Menunggu Keputusan</p>
-                    <p class="mt-2 text-3xl font-semibold text-slate-800">1</p>
+                    <p class="mt-2 text-3xl font-semibold text-slate-800">{{ $menunggu }}</p>
                     <p class="mt-2 text-sm text-slate-400">Diteruskan dari Admin TU</p>
                 </div>
                 <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600">◷</div>
@@ -47,7 +43,7 @@
             <div class="flex justify-between">
                 <div>
                     <p class="text-sm text-slate-500">Pengajuan Disetujui</p>
-                    <p class="mt-2 text-3xl font-semibold text-slate-800">2</p>
+                    <p class="mt-2 text-3xl font-semibold text-slate-800">{{ $disetujui }}</p>
                     <p class="mt-2 text-sm text-slate-400">Total disetujui</p>
                 </div>
                 <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">👍</div>
@@ -58,7 +54,7 @@
             <div class="flex justify-between">
                 <div>
                     <p class="text-sm text-slate-500">Pengajuan Ditolak</p>
-                    <p class="mt-2 text-3xl font-semibold text-slate-800">2</p>
+                    <p class="mt-2 text-3xl font-semibold text-slate-800">{{ $ditolak }}</p>
                     <p class="mt-2 text-sm text-slate-400">Total ditolak</p>
                 </div>
                 <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600">👎</div>
@@ -84,26 +80,51 @@
                         <th class="px-5 py-4">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="border-t border-slate-100">
-                        <td class="px-5 py-4">
-                            <div class="flex items-center gap-3">
-                                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600">R</span>
-                                Rizky Pratama
-                            </div>
-                        </td>
-                        <td class="px-5 py-4">2020015</td>
-                        <td class="px-5 py-4">Surat Permohonan Beasiswa</td>
-                        <td class="px-5 py-4">15 Mei 2025</td>
-                        <td class="px-5 py-4">
-                            <span class="inline-flex items-center gap-1 rounded-full border border-violet-300 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
-                                ● Diteruskan ke Kaprodi
-                            </span>
-                        </td>
-                        <td class="px-5 py-4">
-                            <a href="/kaprodi/persetujuan-pengajuan" class="font-semibold text-violet-600">⊙ Detail</a>
-                        </td>
-                    </tr>
+               <tbody>
+                    @forelse ($pengajuan as $item)
+                        <tr class="border-t border-slate-100">
+                            <td class="px-5 py-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="flex h-8 w-8 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-600">
+                                        {{ strtoupper(substr($item->mahasiswa->nama, 0, 1)) }}
+                                    </span>
+
+                                    {{ $item->mahasiswa->nama }}
+                                </div>
+                            </td>
+
+                            <td class="px-5 py-4">
+                                {{ $item->mahasiswa->nim }}
+                            </td>
+
+                            <td class="px-5 py-4">
+                                {{ $item->jenisSurat->nama }}
+                            </td>
+
+                            <td class="px-5 py-4">
+                                {{ $item->tanggal_pengajuan->format('d M Y') }}
+                            </td>
+
+                            <td class="px-5 py-4">
+                                <span class="inline-flex items-center gap-1 rounded-full border border-violet-300 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+                                    ● Diteruskan ke Kaprodi
+                                </span>
+                            </td>
+
+                            <td class="px-5 py-4">
+                                <a href="/kaprodi/persetujuan-pengajuan"
+                                    class="font-semibold text-violet-600">
+                                    ⊙ Detail
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-5 py-8 text-center text-slate-400">
+                                Belum ada pengajuan yang menunggu keputusan.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -115,23 +136,37 @@
             <a href="/kaprodi/pengumuman" class="text-sm font-semibold text-violet-600">Lihat semua ›</a>
         </div>
 
-        <div class="divide-y divide-slate-100">
-            @foreach ($pengumuman as $item)
-                <div class="flex items-center justify-between gap-4 px-5 py-4">
-                    <div class="flex min-w-0 items-center gap-3">
-                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-100 text-violet-600">📣</div>
-                        <div class="min-w-0">
-                            <p class="truncate font-semibold text-slate-700">{{ $item['title'] }}</p>
-                            <p class="truncate text-sm text-slate-500">{{ $item['desc'] }}</p>
-                        </div>
+        @forelse ($pengumuman as $item)
+            <div class="flex items-center justify-between gap-4 px-5 py-4">
+                <div class="flex min-w-0 items-center gap-3">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-100 text-violet-600">
+                        📣
                     </div>
 
-                    <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $item['kategori'] === 'Beasiswa' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600' }}">
-                        {{ $item['kategori'] }}
-                    </span>
+                    <div class="min-w-0">
+                        <p class="truncate font-semibold text-slate-700">
+                            {{ $item->judul }}
+                        </p>
+
+                        <p class="truncate text-sm text-slate-500">
+                            {{ \Illuminate\Support\Str::limit($item->ringkasan, 80) }}
+                        </p>
+                    </div>
                 </div>
-            @endforeach
-        </div>
+
+                <span
+                    class="rounded-full px-3 py-1 text-xs font-semibold
+                    {{ $item->kategori === 'Beasiswa'
+                        ? 'bg-purple-100 text-purple-600'
+                        : 'bg-blue-100 text-blue-600' }}">
+                    {{ $item->kategori }}
+                </span>
+            </div>
+        @empty
+            <div class="px-5 py-6 text-center text-sm text-slate-400">
+                Belum ada pengumuman.
+            </div>
+        @endforelse
     </section>
 </div>
 @endsection
