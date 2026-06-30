@@ -89,9 +89,9 @@ Route::prefix('mahasiswa')
         
         // Status Pengajuan
         Route::get(
-            '/status/{id}',
-            [PengajuanSuratController::class, 'status']
-        )->name('pengajuan.status');
+            '/status',
+            [PengajuanSuratController::class, 'status'
+        ])->name('pengajuan.status');
 
         Route::get(
             '/pengajuan/{pengajuan}/download',
@@ -178,13 +178,4 @@ Route::prefix('kaprodi')
             '/persetujuan-pengajuan/{pengajuan}/tolak',
             [PersetujuanController::class, 'tolak']
         )->name('kaprodi.persetujuan.tolak');
-
-        // Debug (opsional)
-        Route::get('/debug-auth', function () {
-            return [
-                'check' => auth()->check(),
-                'user' => auth()->user(),
-                'session_id' => session()->getId(),
-            ];
-        });
     });

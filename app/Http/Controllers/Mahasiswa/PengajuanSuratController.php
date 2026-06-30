@@ -46,7 +46,7 @@ class PengajuanSuratController extends Controller
         $file = $request->file('file_pengajuan')
             ->store('pengajuan', 'public');
 
-        $pengajuan = PengajuanSurat::create([
+        PengajuanSurat::create([
             'mahasiswa_id' => Auth::user()->mahasiswa->id,
             'jenis_surat_id' => $request->jenis_surat_id,
             'keperluan' => $request->keperluan,
